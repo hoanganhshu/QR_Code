@@ -1,0 +1,23 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- phần nền (inactive track) -->
+    <item android:id="@android:id/background">
+        <shape android:shape="rectangle">
+            <size android:height="2dp"/>
+            <corners android:radius="999dp"/>
+            <solid android:color="#DDE6FF"/>
+        </shape>
+    </item>
+
+    <!-- phần progress (active track) -->
+    <item android:id="@android:id/progress">
+        <clip>
+            <shape android:shape="rectangle">
+                <size android:height="2dp"/>
+                <corners android:radius="999dp"/>
+                <solid android:color="#2E5BFF"/>
+            </shape>
+        </clip>
+    </item>
+
+</layer-list>

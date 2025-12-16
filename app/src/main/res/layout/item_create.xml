@@ -1,0 +1,62 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:layout_margin="@dimen/_5sdp"
+        >
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_72sdp"
+            app:layout_constraintTop_toTopOf="parent"
+
+
+
+            app:layout_constraintStart_toStartOf="parent"
+            app:strokeColor="#CDD0E3"
+            app:strokeWidth="2dp"
+            app:cardCornerRadius="@dimen/_15sdp"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:text="@string/name_example"
+                android:id="@+id/title"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:textSize="@dimen/_13sdp"
+                android:layout_marginTop="@dimen/_13sdp"
+                android:layout_marginStart="@dimen/_20sdp"
+
+                />
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:hint="@string/name_example"
+                android:textColor="@color/black"
+                android:textColorHint="#B4B7CC"
+                android:id="@+id/subtitle"
+                android:textSize="@dimen/_12sdp"
+                android:background="@null"
+                android:layout_marginTop="@dimen/_38sdp"
+
+                android:layout_marginStart="@dimen/_20sdp"
+
+                />
+
+
+
+        </com.google.android.material.card.MaterialCardView>
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

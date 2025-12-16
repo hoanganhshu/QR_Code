@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    
+    
+    <ImageView
+        android:layout_width="22dp"
+        android:layout_height="22dp"
+        android:src="@drawable/circlehistory"
+        android:id="@+id/circle_history"
+        
+        />
+    
+    <View
+        android:layout_width="@dimen/_1sdp"
+        android:layout_height="@dimen/_74sdp"
+        android:backgroundTint="#CDD0E3"
+        android:id="@+id/view1"
+        android:layout_marginTop="@dimen/_8sdp"
+
+        app:layout_constraintTop_toBottomOf="@+id/circle_history"
+        app:layout_constraintStart_toStartOf="@id/circle_history"
+        android:layout_marginStart="11dp"
+        />
+    
+    <ImageView
+        android:layout_width="@dimen/_19sdp"
+        android:layout_marginTop="@dimen/_8sdp"
+        android:src="@drawable/decor_add"
+        android:padding="@dimen/_5sdp"
+        android:background="#B4B7CC"
+        app:layout_constraintTop_toBottomOf="@id/view1"
+        android:layout_marginBottom="@dimen/_8sdp"
+        android:id="@+id/decor_add"
+        android:layout_height="@dimen/_24sdp">
+
+
+
+    </ImageView>
+    <View
+        android:layout_width="@dimen/_1sdp"
+        android:layout_height="@dimen/_74sdp"
+        android:backgroundTint="#CDD0E3"
+        android:id="@+id/view2"
+        android:layout_marginTop="@dimen/_8sdp"
+
+        app:layout_constraintTop_toBottomOf="@+id/decor_add"
+        app:layout_constraintStart_toStartOf="@id/decor_add"
+        android:layout_marginStart="11dp"
+        />
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@+id/circle_history"
+        android:text="@string/createdin"
+        android:id="@+id/createin"
+        android:textColor="#B4B7CC"
+        android:textSize="@dimen/_10sdp"
+        android:layout_marginStart="@dimen/_16sdp"
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/day_history"
+        app:layout_constraintTop_toBottomOf="@id/createin"
+        app:layout_constraintStart_toStartOf="@id/createin"
+        android:text="@string/createdin"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:textSize="@dimen/_13sdp"
+
+        />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/list_item_history_in_day"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@id/day_history"
+        app:layout_constraintStart_toStartOf="@id/createin"
+
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <TextView
+        android:layout_width="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:id="@+id/createin"
+        android:text="@string/createdin"
+        android:layout_height="@dimen/_16sdp"/>
+    <TextView
+        android:layout_width="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/createin"
+        android:textSize="@dimen/_13sdp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:id="@+id/view1"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:text="@string/createdin"
+        android:layout_height="@dimen/_14sdp"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_1sdp"
+        android:backgroundTint="#CDD0E3"
+
+        android:layout_marginTop="@dimen/_8sdp"
+
+
+
+        app:layout_constraintStart_toEndOf="@id/view1"
+        app:layout_constraintBottom_toBottomOf="@+id/view1"
+        android:layout_marginStart="@dimen/_70sdp"
+        />
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="@dimen/_40sdp"
+        app:layout_constraintTop_toBottomOf="@+id/view1"
+        />
+
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

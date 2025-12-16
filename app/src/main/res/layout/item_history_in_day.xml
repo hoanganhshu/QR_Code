@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="@dimen/_127sdp"
+        app:strokeColor="#B4B7CC"
+        app:cardCornerRadius="@dimen/_15sdp"
+        android:layout_height="@dimen/_149sdp"
+
+        >
+
+
+        <ImageView
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:src="@drawable/icon_phone"
+            android:id="@+id/icon_phone"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="18dp"
+            />
+        <ImageView
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:src="@drawable/two_dot"
+        android:id="@+id/two_dots"
+        android:layout_marginStart="@dimen/_91sdp"
+        android:layout_marginTop="@dimen/_11sdp"
+        />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textSize="@dimen/_13sdp"
+            android:text="@string/name_example"
+            android:layout_marginStart="@dimen/_12sdp"
+            android:layout_marginTop="@dimen/_60sdp"
+
+            />
+        <View
+            android:layout_width="@dimen/_103sdp"
+            android:layout_height="@dimen/_1sdp"
+            android:layout_marginTop="@dimen/_91sdp"
+            android:layout_marginStart="@dimen/_12sdp"
+
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/_16sdp"
+
+            android:textSize="@dimen/_10sdp"
+            android:text="@string/createdin"
+            android:layout_marginStart="@dimen/_12sdp"
+            android:layout_marginTop="@dimen/_100sdp"
+
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/_16sdp"
+
+            android:textSize="@dimen/_11sdp"
+            android:text="@string/createdin"
+            android:layout_marginStart="@dimen/_12sdp"
+            android:layout_marginTop="@dimen/_117sdp"
+
+            />
+    </com.google.android.material.card.MaterialCardView>
+    
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

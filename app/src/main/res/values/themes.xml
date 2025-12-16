@@ -1,0 +1,12 @@
+<resources>
+
+
+    <style name="Theme.QRScan" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+
+        <item name="colorOnPrimary">@android:color/white</item>
+
+
+        <item name="colorOnSecondary">@android:color/black</item>
+    </style>
+
+</resources>

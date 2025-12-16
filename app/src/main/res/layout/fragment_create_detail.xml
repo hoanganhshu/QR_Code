@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+    tools:context=".view.SettingFragment">
+
+    
+        <ImageView
+            android:layout_width="@dimen/_24sdp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_height="@dimen/_24sdp"
+            android:id="@+id/btnback"
+            android:layout_marginStart="@dimen/_24sdp"
+            android:src="@drawable/btnback"
+            android:elevation="@dimen/_2sdp"
+            android:layout_marginTop="29dp"
+
+
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:text="@string/create"
+            android:textStyle="bold"
+            android:id="@+id/create"
+            android:background="@color/base"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_18sdp"
+            android:paddingTop="29dp"
+
+            android:gravity="center_horizontal"
+            android:layout_height="78dp"
+            app:layout_constraintTop_toTopOf="parent"
+
+            app:layout_constraintStart_toStartOf="parent"
+            />
+        
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_marginHorizontal="@dimen/_24sdp"
+            android:layout_height="@dimen/_40sdp"
+            app:layout_constraintTop_toBottomOf="@id/create"
+            app:cardCornerRadius="@dimen/_15sdp"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            android:backgroundTint="#F2F2F2"
+            android:layout_marginTop="@dimen/_46sdp"
+            android:id="@+id/optionwifi"
+            >
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                >
+
+
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+
+                android:text="@string/free"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:textSize="@dimen/_13sdp"
+
+                android:id="@+id/free"
+                />
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="@string/wpa_wpa2"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:textStyle="bold"
+
+                android:textSize="@dimen/_13sdp"
+                android:id="@+id/wpa"
+                />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_weight="1"
+                android:text="@string/wep"
+                android:textStyle="bold"
+                android:textSize="@dimen/_13sdp"
+                android:id="@+id/wep"
+                />
+            </LinearLayout>
+
+
+
+
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:id="@+id/recyclerview"
+            android:layout_marginTop="@dimen/_28sdp"
+            android:layout_marginHorizontal="@dimen/_24sdp"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/optionwifi"
+
+            />
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="72dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+
+
+        app:cardElevation="@dimen/_25sdp"
+        >
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/createa"
+            android:gravity="center"
+            android:id="@+id/btncreate"
+            android:textSize="@dimen/_18sdp"
+            android:textStyle="bold"
+            android:textColor="@color/base"
+            />
+    </com.google.android.material.card.MaterialCardView>
+
+  
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    
+    
+
+
+
