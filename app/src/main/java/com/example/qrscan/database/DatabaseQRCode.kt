@@ -9,7 +9,7 @@ import androidx.room.TypeConverters
 import com.example.qrscan.database.data.QRCodeEntity
 import kotlin.jvm.java
 
-@Database(entities = [QRCodeEntity :: class], version = 1, exportSchema = false)
+@Database(entities = [QRCodeEntity :: class], version = 2, exportSchema = false)
 @TypeConverters(Converters::class)
 abstract class DatabaseQRCode : RoomDatabase(){
     abstract fun qrItemDao() : QrItemDao

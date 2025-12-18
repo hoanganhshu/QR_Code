@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:padding="12dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:text="@string/text_title"
+            android:textStyle="bold"
+            android:textSize="18dp"
+            android:maxLines="1"
+            android:ellipsize="end"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/tvSubtitle"
+            app:layout_constraintHorizontal_weight="4" />
+
+        <TextView
+            android:id="@+id/tvSubtitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:text="@string/examplesubtitle"
+            android:textSize="15dp"
+            android:layout_marginStart="4dp"
+            app:layout_constraintHorizontal_weight="6"
+            app:layout_constraintTop_toTopOf="@id/tvTitle"
+            app:layout_constraintStart_toEndOf="@id/tvTitle"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

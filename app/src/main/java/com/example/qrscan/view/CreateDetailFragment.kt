@@ -3,6 +3,7 @@ package com.example.qrscan.view
 import android.R.attr.data
 import android.graphics.Bitmap
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -18,6 +19,7 @@ import com.example.qrscan.BaseFragment
 import com.example.qrscan.MainActivity
 import com.example.qrscan.R
 import com.example.qrscan.adapter.AdapterCreate
+import com.example.qrscan.database.data.QRCodeEntity
 import com.example.qrscan.databinding.FragmentCreateDetailBinding
 import com.example.qrscan.viewmodel.ScanViewModel
 import kotlinx.coroutines.launch
@@ -36,6 +38,9 @@ private const val ARG_PARAM2 = "param2"
  */
 class CreateDetailFragment : BaseFragment<FragmentCreateDetailBinding>(){
     private val viewModel : ScanViewModel by activityViewModels()
+    private lateinit var adapter: AdapterCreate
+    var qrid : Int =0
+
     private var data =listOf<Map<String,Any>>()
     override fun inflate(
         layoutInflater: LayoutInflater,
@@ -46,24 +51,47 @@ class CreateDetailFragment : BaseFragment<FragmentCreateDetailBinding>(){
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-            viewLifecycleOwner.lifecycleScope.launch {
-                viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED){
-                    viewModel.createOption.collect {
+        adapter = AdapterCreate()
+        mBinding.recyclerview.layoutManager = LinearLayoutManager(requireContext())
+        mBinding.recyclerview.adapter = adapter
+       qrid = viewModel.itemIdCreate
+        Log.d("TEST_ID", "ID nhận từ ViewModel = $qrid")
+        Log.d("TEST_ID", "ID  = $id")
+        lifecycleScope.launch {
 
-                        opt ->
-                        val adapter = AdapterCreate()
-                        mBinding.recyclerview.layoutManager = LinearLayoutManager(requireContext())
-                        mBinding.recyclerview.adapter = adapter
+            if (qrid != 0) {
+                val qr = viewModel.getById(qrid)
+                if (qr != null) {
+                    fillUI(qr)
+                }
+                else {
+                    Log.d("RecyclerView", "Data size: ${data.size}")
 
+
+                }
+
+
+
+
+
+
+            }
+        }
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.createOption.collect { opt ->
+                    if (!opt.isNullOrBlank()) {
+                        if (qrid != 0) return@collect
                         mBinding.create.setText(opt)
                         fillInforGenerate(opt)
                         adapter.submitData(data)
-
-
-
                     }
                 }
             }
+        }
+
+
+
         (activity as? MainActivity)?.showBottomNav(false)
         mBinding.btnback.setOnClickListener {
             val next = requireActivity().findViewById<ViewPager2>(R.id.viewPager)
@@ -79,7 +107,7 @@ class CreateDetailFragment : BaseFragment<FragmentCreateDetailBinding>(){
                 val opt = viewModel.createOption.value ?: return@setOnClickListener
 
 
-                val content = when (opt) {
+                viewModel.content = when (opt) {
 
 
                     "Email" -> {
@@ -194,11 +222,24 @@ class CreateDetailFragment : BaseFragment<FragmentCreateDetailBinding>(){
                     else -> throw Exception("Unsupported QR type: $opt")
                 }
 
+                viewModel.userInput = input
 
-               val bitmap =GenerateQR.generateQR(content)
+                val content = viewModel.content
+                if (content.isNullOrEmpty()) {
+                    Toast.makeText(requireContext(), "Nội dung QR rỗng!", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+
+                val bitmap = GenerateQR.generateQR(content)
+
                 val stream= ByteArrayOutputStream()
                 bitmap.compress(Bitmap.CompressFormat.PNG,100,stream)
                 viewModel.byteQR=stream.toByteArray()
+
+
+
+                Log.d("QR_DEBUG", "content = $content")
+                Log.d("QR_DEBUG", "byteQR size = ${viewModel.byteQR?.size}")
 
                 val next = requireActivity().findViewById<ViewPager2>(R.id.viewPager)
                 next.currentItem = next.currentItem +1
@@ -209,11 +250,96 @@ class CreateDetailFragment : BaseFragment<FragmentCreateDetailBinding>(){
 
             }
         }
+        }
+    private fun fillUI(qr: QRCodeEntity) {
+
+        mBinding.create.setText(qr.type.name)
+        Log.d("QR_TYPE", "qr.type.name = ${qr.type.name}")
+
+        viewModel.setCreateOption(qr.type.name.lowercase().replaceFirstChar { it.uppercase() })
+
+        Log.d("RecyclerV", "Data size: ${qr.type.name.lowercase().replaceFirstChar { it.uppercase() }}")
 
 
 
 
+        val prefill = mutableMapOf<String, String>()
+
+        when (qr.type.name.lowercase().replaceFirstChar { it.uppercase() }) {
+
+            "Email" -> {
+                val email = qr.data["email"] as? String ?: ""
+                val cc = qr.data["cc"] as? String ?: ""
+                val subject = qr.data["subject"] as? String ?: ""
+                val body = qr.data["body"] as? String ?: ""
+
+                prefill["email"] = email
+                prefill["cc"] = cc
+                prefill["subject"] = subject
+                prefill["body"] = body
+            }
+
+            "Phone" -> {
+                val number = qr.data["number"] as? String
+                    ?: qr.content.removePrefix("tel:")
+                prefill["number"] = number
+            }
+
+            "Url" -> {
+                prefill["url"] = qr.content
+            }
+
+            "Text" -> {
+                prefill["text"] = qr.content
+            }
+
+            "Sms" -> {
+                val phone = qr.data["phone"] as? String ?: ""
+                val body = qr.data["body"] as? String ?: ""
+
+                prefill["phone"] = phone
+                prefill["body"] = body
+            }
+
+            "Wifi" -> {
+                val ssid = qr.data["network"] as? String ?: ""
+                val pass = qr.data["password"] as? String ?: ""
+
+                prefill["network"] = ssid
+                prefill["password"] = pass
+            }
+
+            "Contact" -> {
+                prefill["name"] = qr.data["name"] as? String ?: ""
+                prefill["nickname"] = qr.data["nickname"] as? String ?: ""
+                prefill["phone"] = qr.data["phone"] as? String ?: ""
+                prefill["address"] = qr.data["address"] as? String ?: ""
+            }
+
+            "Location" -> {
+                val parts = qr.content.removePrefix("geo:").split(",")
+                prefill["latitude"] = parts.getOrNull(0) ?: ""
+                prefill["longitude"] = parts.getOrNull(1) ?: ""
+            }
+
+            "Calendar" -> {
+                prefill["name"] = qr.data["name"] as? String ?: ""
+                prefill["start"] = qr.data["start"] as? String ?: ""
+                prefill["end"] = qr.data["end"] as? String ?: ""
+                prefill["location"] = qr.data["location"] as? String ?: ""
+                prefill["description"] = qr.data["description"] as? String ?: ""
+            }
+        }
+
+
+        fillInforGenerate(qr.type.name.lowercase().replaceFirstChar { it.uppercase() })
+
+
+
+        adapter.submitData(data)
+        adapter.prefillInput(prefill)
     }
+
     fun fillInforGenerate(opt: String?) {
         data = when (opt) {
 

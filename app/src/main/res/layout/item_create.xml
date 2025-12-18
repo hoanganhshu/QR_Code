@@ -8,6 +8,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/_20sdp"
         android:layout_margin="@dimen/_5sdp"
+        android:paddingBottom="20dp"
         >
 
         <com.google.android.material.card.MaterialCardView

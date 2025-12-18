@@ -62,4 +62,12 @@
     <string name="createa">CREATE</string>
     <string name="generatesuccess">Generate Successfull!</string>
     <string name="qrcode">QR CODE</string>
+    <string name="example">25th Dec, 2020</string>
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
+    <string name="examplesubtitle">Subtitle example here</string>
+    <string name="text_title">Text:</string>
+    <string name="delete">Delete</string>
+    <string name="share">Share</string>
+    <string name="edit">Edit</string>
 </resources>

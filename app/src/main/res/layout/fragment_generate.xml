@@ -97,6 +97,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:textColor="#B4B7CC"
         android:textSize="@dimen/_17sdp"
+        android:id="@+id/createsubtitle"
+        android:visibility="gone"
         android:textAlignment="center"
         app:layout_constraintBottom_toTopOf="@id/createnow"
         android:layout_marginBottom="@dimen/_25sdp"
@@ -109,7 +111,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-
+         android:visibility="gone"
         android:backgroundTint="@color/base"
         app:cardCornerRadius="@dimen/_13sdp"
         android:id="@+id/createnow"
@@ -135,13 +137,13 @@
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/item_day_history"
+        android:id="@+id/recyclerview"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginEnd="@dimen/_20sdp"
+        android:layout_marginEnd="@dimen/_24sdp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/appbar"
         android:layout_marginTop="@dimen/_30sdp"
-        android:layout_marginStart="@dimen/_23sdp"
+        android:layout_marginStart="@dimen/_24sdp"
         />
 
 

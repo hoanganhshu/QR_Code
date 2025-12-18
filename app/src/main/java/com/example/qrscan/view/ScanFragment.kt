@@ -46,6 +46,8 @@ import kotlinx.coroutines.launch
 class ScanFragment : BaseFragment<FragmentScanBinding>(){
     private var camera : Camera? = null
     var isHandled = false
+
+
     private var torchOn = false
     private  val scanner = BarcodeScanning.getClient(BarcodeScannerOptions.Builder().setBarcodeFormats(
         Barcode.FORMAT_QR_CODE).build())
@@ -76,11 +78,20 @@ class ScanFragment : BaseFragment<FragmentScanBinding>(){
 
         viewLifecycleOwner.lifecycleScope.launch {
             delay(2000)
-            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA)
+
+            if (!isAdded) return@launch
+
+            val ctx = context ?: return@launch
+
+            if (ContextCompat.checkSelfPermission(ctx, Manifest.permission.CAMERA)
                 == PackageManager.PERMISSION_GRANTED
-            ) startCamera()
-            else requestPermission.launch(Manifest.permission.CAMERA)
+            ) {
+                startCamera()
+            } else {
+                requestPermission.launch(Manifest.permission.CAMERA)
+            }
         }
+
         setUpUiControler()
         startScanLineAnimation()
 
@@ -142,6 +153,11 @@ class ScanFragment : BaseFragment<FragmentScanBinding>(){
         mBinding.choseimage.setOnClickListener {
             pickImage.launch("image/*")
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        camera?.cameraControl?.enableTorch(false)
     }
 
 

@@ -4,8 +4,11 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.qrscan.database.DatabaseProvider
+import com.example.qrscan.database.data.QRCodeEntity
+import com.example.qrscan.database.data.QRType
 import com.example.qrscan.model.ScanModel
 import com.google.mlkit.vision.barcode.common.Barcode
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -14,11 +17,17 @@ class ScanViewModel(application: Application) : AndroidViewModel(application) {
 
     private val model: ScanModel
 
-    // public read-only StateFlow, private mutable
-    private val _createOption = MutableStateFlow<String?>(null)
 
-     lateinit var byteQR : ByteArray
-    val createOption = _createOption.asStateFlow()
+    private val _createOption = MutableStateFlow<String?>(null)
+    var userInput: Map<String, String> = emptyMap()
+
+    var itemIdCreate : Int=0
+
+
+    var byteQR: ByteArray? = null
+
+    var content : String?=null
+    var createOption = _createOption.asStateFlow()
 
     init {
         val context = application.applicationContext
@@ -31,9 +40,29 @@ class ScanViewModel(application: Application) : AndroidViewModel(application) {
         _createOption.value = value
     }
 
-    fun onBarcodeScanned(barcode: Barcode) {
+    fun saveCustomQR(type: QRType, content: String?, data: Map<String, String>) {
         viewModelScope.launch {
-            model.saveBarcode(barcode)
+            if (content == null || byteQR == null) return@launch
+            model.saveCustomQR(type, content, data, byteQR!!)
         }
     }
+    fun getAll(): Flow<List<QRCodeEntity>> {
+        return model.getAll()
+    }
+   suspend fun deleteById(id : Int){
+        model.deleteById(id)
+    }
+    suspend fun getById(id : Int) : QRCodeEntity?{
+         return model.getBitmapfromId(id)
+    }
+    fun insertQRCode(qr: QRCodeEntity) = viewModelScope.launch {
+        model.insert(qr)
+    }
+
+    fun updateQRCode(qr: QRCodeEntity) = viewModelScope.launch {
+        model.update(qr)
+    }
+
+
+
 }

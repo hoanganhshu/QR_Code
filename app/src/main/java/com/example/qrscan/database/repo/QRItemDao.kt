@@ -8,9 +8,6 @@ interface QrItemDao {
     @Query("SELECT * FROM QRCode ORDER BY createdAt DESC")
     fun getAll(): Flow<List<QRCodeEntity>>
 
-    @Query("SELECT * FROM QRCode WHERE id = :id LIMIT 1")
-    suspend fun getById(id: String): QRCodeEntity?
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(item: QRCodeEntity)
 
@@ -18,10 +15,16 @@ interface QrItemDao {
     suspend fun update(item: QRCodeEntity)
 
     @Query("DELETE FROM QRCode WHERE id = :id")
-    suspend fun deleteById(id: String)
+    suspend fun deleteById(id: Int)
 
     @Query("DELETE FROM QRCode")
     suspend fun deleteAll()
+
+    @Query("SELECT * FROM QRCode WHERE id = :id LIMIT 1")
+    suspend fun getById(id: Int): QRCodeEntity?
+
+
+
 
 
 }
