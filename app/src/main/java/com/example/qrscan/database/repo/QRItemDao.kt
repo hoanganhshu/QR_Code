@@ -19,6 +19,8 @@ interface QrItemDao {
 
     @Query("DELETE FROM QRCode")
     suspend fun deleteAll()
+    @Query("DELETE FROM QRCode WHERE id IN (:ids)")
+    suspend fun deleteListById(ids: List<Int>)
 
     @Query("SELECT * FROM QRCode WHERE id = :id LIMIT 1")
     suspend fun getById(id: Int): QRCodeEntity?

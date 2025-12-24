@@ -7,9 +7,11 @@ import com.example.qrscan.view.CreateDetailFragment
 import com.example.qrscan.view.CreateOptionFragment
 import com.example.qrscan.view.GenerateFragment
 import com.example.qrscan.view.HistoryFragment
+import com.example.qrscan.view.HistoryScanFragment
 import com.example.qrscan.view.OnBoardFragment1
 import com.example.qrscan.view.OnBoardFragment2
 import com.example.qrscan.view.OnBoardFragment3
+import com.example.qrscan.view.PrivacyFragment
 import com.example.qrscan.view.ResultFragment
 import com.example.qrscan.view.ScanFragment
 import com.example.qrscan.view.SettingFragment
@@ -29,6 +31,8 @@ class AdapterViewPaper(mainActivity: MainActivity) : FragmentStateAdapter(mainAc
            8-> CreateOptionFragment()
            9-> CreateDetailFragment()
            10-> ResultFragment()
+           11-> HistoryScanFragment()
+           12-> PrivacyFragment()
 
 
            else -> SplashFragment()
@@ -36,7 +40,7 @@ class AdapterViewPaper(mainActivity: MainActivity) : FragmentStateAdapter(mainAc
 
     }
 
-    override fun getItemCount(): Int =11
+    override fun getItemCount(): Int =13
 
 
 

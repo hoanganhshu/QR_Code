@@ -7,14 +7,14 @@ import com.google.gson.reflect.TypeToken
 
 class Converters {
     private val gson = Gson()
-    private val mapType = object : TypeToken<Map<String, Any?>>() {}.type
+    private val mapType = object : TypeToken<Map<String,String>>() {}.type
 
     @TypeConverter
-    fun fromMap(map: Map<String, Any?>?): String =
+    fun fromMap(map: Map<String, String>?): String =
         gson.toJson(map)
 
     @TypeConverter
-    fun toMap(json: String): Map<String, Any?> =
+    fun toMap(json: String): Map<String, String> =
         gson.fromJson(json, mapType)
 
     @TypeConverter
@@ -22,5 +22,7 @@ class Converters {
 
     @TypeConverter
     fun toQrType(value: String): QRType = QRType.valueOf(value)
+
+
 
 }

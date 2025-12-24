@@ -1,6 +1,7 @@
 package com.example.qrscan.view
 
 import android.R.attr.data
+import android.R.attr.type
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -46,6 +47,8 @@ class ResultFragment : BaseFragment<FragmentResultBinding>(){
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (activity as? MainActivity)?.showBottomNav(false)
+        val next = requireActivity().findViewById<ViewPager2>(R.id.viewPager)
+        next.isUserInputEnabled = false
 
         val adapter = AdapterResult()
         mBinding.recyclerview.layoutManager = LinearLayoutManager(requireContext())
@@ -53,6 +56,8 @@ class ResultFragment : BaseFragment<FragmentResultBinding>(){
         mBinding.recyclerview.addItemDecoration(divider)
 
         mBinding.recyclerview.adapter = adapter
+        val qrType = viewModel.createOption.value ?: return
+
         (activity as? MainActivity)?.showBottomNav(false)
 
         val listData = viewModel.userInput.map { (key, value) ->
@@ -62,61 +67,35 @@ class ResultFragment : BaseFragment<FragmentResultBinding>(){
             )
         }
         mBinding.btnback.setOnClickListener {
-            val next = requireActivity().findViewById<ViewPager2>(R.id.viewPager)
+            val adapter = mBinding.recyclerview.adapter as? AdapterResult
+            adapter?.submitData(emptyList())
+
+
+            viewModel.userInput = emptyMap()
+
             next.currentItem = next.currentItem -1
-        }
-        val opt = viewModel.createOption.value
-        mBinding.title.setText(opt)
-        mBinding.subtitle.setText(getTodayFormatted())
-        when (opt) {
-
-
-            "Email" -> {
-                mBinding.imagetitle.setImageResource(R.drawable.email)
-
-
-            }
-
-            "Phone" -> {
-                mBinding.imagetitle.setImageResource(R.drawable.icon_phone)
-
-            }
-
-            "Location" -> {
-                mBinding.imagetitle.setImageResource(R.drawable.location)
-            }
-
-            "Sms" -> {
-                mBinding.imagetitle.setImageResource(R.drawable.sms)
-            }
-
-
-            "Contact" -> {
-                mBinding.imagetitle.setImageResource(R.drawable.contacts)
-
-            }
-
-            "Url" -> {
-                mBinding.imagetitle.setImageResource(R.drawable.url)
-
-            }
-
-            "Wifi" -> {
-                mBinding.imagetitle.setImageResource(R.drawable.wifi)
-
-            }
-
-            "Text" -> {
-                mBinding.imagetitle.setImageResource(R.drawable.text)
-            }
-
-            "Calendar" -> {
-                mBinding.imagetitle.setImageResource(R.drawable.calendar)
-
-            }
-
 
         }
+        qrType?.let { type ->
+
+            mBinding.title.text = getTitle(type)
+            mBinding.subtitle.text = getTodayFormatted()
+
+            when (type) {
+                QRType.EMAIL -> mBinding.imagetitle.setImageResource(R.drawable.email)
+                QRType.PHONE -> mBinding.imagetitle.setImageResource(R.drawable.icon_phone)
+                QRType.LOCATION -> mBinding.imagetitle.setImageResource(R.drawable.location)
+                QRType.SMS -> mBinding.imagetitle.setImageResource(R.drawable.sms)
+                QRType.CONTACT -> mBinding.imagetitle.setImageResource(R.drawable.contacts)
+                QRType.URL -> mBinding.imagetitle.setImageResource(R.drawable.url)
+                QRType.WIFI -> mBinding.imagetitle.setImageResource(R.drawable.wifi)
+                QRType.TEXT -> mBinding.imagetitle.setImageResource(R.drawable.text)
+                QRType.EVENT -> mBinding.imagetitle.setImageResource(R.drawable.calendar)
+                else -> {}
+            }
+        }
+
+
         val bytes = viewModel.byteQR
 
         if (bytes != null && bytes.isNotEmpty()) {
@@ -131,65 +110,40 @@ class ResultFragment : BaseFragment<FragmentResultBinding>(){
 
         adapter.submitData(listData)
         mBinding.cancel.setOnClickListener {
+            val adapter = mBinding.recyclerview.adapter as? AdapterResult
+            adapter?.submitData(emptyList())
+
+            viewModel.userInput = emptyMap()
             val next=requireActivity().findViewById<ViewPager2>(R.id.viewPager)
             next.currentItem-=1
+
 
         }
         mBinding.save.setOnClickListener {
 
-            val typeString = viewModel.createOption.value ?: return@setOnClickListener
+            val qrType = viewModel.createOption.value ?: return@setOnClickListener
 
-            val type = when (typeString) {
-                "Text" -> QRType.TEXT
-                "Url" -> QRType.URL
-                "Email" -> QRType.EMAIL
-                "Phone" -> QRType.PHONE
-                "Sms" -> QRType.SMS
-                "Wifi" -> QRType.WIFI
-                "Contact" -> QRType.CONTACT
-                "Location" -> QRType.LOCATION
-                "Calendar" -> QRType.EVENT
-                else -> QRType.TEXT
-            }
+            viewModel.saveCustomQR(
+                id = viewModel.itemIdCreate,
+                type = qrType,
+                content = viewModel.content ?: return@setOnClickListener,
+                data = viewModel.userInput
+            )
 
-            val content = viewModel.content ?: return@setOnClickListener
-            val input = viewModel.userInput
-            val image = viewModel.byteQR ?: ByteArray(0)
-
-            val qrid = viewModel.itemIdCreate
-
-            if (qrid == 0) {
-
-                viewModel.insertQRCode(
-                    QRCodeEntity(
-                        id = 0,
-                        type = type,
-                        content = content,
-                        createdAt = System.currentTimeMillis(),
-                        data = input,
-                        image = image
-                    )
-                )
-            } else {
-
-                viewModel.updateQRCode(
-                    QRCodeEntity(
-                        id = qrid,
-                        type = type,
-                        content = content,
-                        createdAt = System.currentTimeMillis(),
-                        data = input,
-                        image = image
-                    )
-                )
-            }
-
-            Toast.makeText(requireContext(), "Saved!", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), getString(R.string.save), Toast.LENGTH_SHORT).show()
         }
 
 
 
-    }
+
+
+
+
+        }
+
+
+
+
     fun getTodayFormatted(): String {
         val calendar = Calendar.getInstance()
         val day = calendar.get(Calendar.DAY_OF_MONTH)
@@ -232,6 +186,21 @@ class ResultFragment : BaseFragment<FragmentResultBinding>(){
 
         adapter.submitData(listData)
     }
+private fun getTitle(type: QRType): String {
+    return when (type) {
+        QRType.EMAIL    -> getString(R.string.email)
+        QRType.PHONE    -> getString(R.string.phone)
+        QRType.TEXT     -> getString(R.string.text)
+        QRType.SMS      -> getString(R.string.sms)
+        QRType.URL      -> getString(R.string.url)
+        QRType.WIFI     -> getString(R.string.wifi)
+        QRType.CONTACT  -> getString(R.string.contact)
+        QRType.LOCATION -> getString(R.string.location)
+        QRType.EVENT    -> getString(R.string.calendar)
+        else -> "No"
+    }
+}
+
 
 
 }

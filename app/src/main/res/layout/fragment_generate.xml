@@ -11,6 +11,7 @@
         android:layout_width="match_parent"
         android:id="@+id/appbar"
         app:layout_constraintTop_toTopOf="parent"
+        android:fontFamily="@font/poppin_family"
         app:layout_constraintStart_toStartOf="parent"
         android:background="@color/base"
         android:layout_height="@dimen/_140sdp"
@@ -53,6 +54,7 @@
         <ImageView
             android:layout_width="24dp"
             android:layout_height="24dp"
+            android:id="@+id/generate"
             android:layout_marginTop="@dimen/_29sdp"
             android:layout_marginStart="@dimen/_23sdp"
             android:src="@drawable/add"
@@ -78,6 +80,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/_20sdp"
+            android:fontFamily="@font/poppin_family"
             android:text="@string/generate_subtitle"
             android:textStyle="bold"
             android:layout_marginTop="@dimen/_87sdp"
@@ -145,6 +148,7 @@
         android:layout_marginTop="@dimen/_30sdp"
         android:layout_marginStart="@dimen/_24sdp"
         />
+
 
 
 

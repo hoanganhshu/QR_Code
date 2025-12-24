@@ -6,3 +6,7 @@ data class DataGenerateInMonth(
     val subtitle : String,
     val id : Int
 )
+data class HistoryScan(
+    val createAt : Long ,
+    val item : List<QRCodeHistoryScanEntity>
+)

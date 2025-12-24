@@ -1,10 +1,11 @@
 package com.example.qrscan.adapter
 
+import android.graphics.Color
 import androidx.databinding.ViewDataBinding
 import com.example.qrscan.R
 import com.example.qrscan.databinding.ItemResultBinding
 
-class AdapterResult : BaseAdapter<Map<String, String>>() {
+class AdapterResult(private val textColor : Int = Color.WHITE) : BaseAdapter<Map<String, String>>() {
 
     override fun getItemLayout(): Int = R.layout.item_result
 
@@ -13,5 +14,7 @@ class AdapterResult : BaseAdapter<Map<String, String>>() {
 
         mBinding.tvTitle.text = item["title"]
         mBinding.tvSubtitle.text = item["subtitle"]
+        mBinding.tvTitle.setTextColor(textColor)
+        mBinding.tvSubtitle.setTextColor(textColor)
     }
 }

@@ -20,7 +20,7 @@ object DatabaseProvider {
         return Room.databaseBuilder(
             context.applicationContext,
             DatabaseQRCode::class.java,
-            "qr_items_db"
+            "qr_generate.db"
         ).build()
     }
 }

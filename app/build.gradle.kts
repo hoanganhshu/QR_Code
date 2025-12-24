@@ -57,6 +57,7 @@ dependencies {
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
 
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -65,6 +66,8 @@ dependencies {
     implementation(libs.androidx.room.runtime)
     implementation("com.google.dagger:hilt-android:2.57.2")
     ksp("com.google.dagger:hilt-compiler:2.57.2")
+
+    implementation("com.google.android.play:review-ktx:2.0.1")
 
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.4.0")
     implementation(libs.androidx.sqlite.bundled)

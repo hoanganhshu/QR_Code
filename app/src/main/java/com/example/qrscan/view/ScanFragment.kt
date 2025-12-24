@@ -7,11 +7,13 @@ import android.app.ProgressDialog.show
 import androidx.camera.core.ImageProxy
 
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.health.connect.datatypes.units.Length
 import android.net.Uri
 
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -29,23 +31,32 @@ import androidx.camera.core.ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.viewpager2.widget.ViewPager2
 import com.example.qrscan.BaseFragment
 import com.example.qrscan.MainActivity
 import com.example.qrscan.R
 import com.example.qrscan.databinding.FragmentScanBinding
+import com.example.qrscan.util.ScanSetting
+import com.example.qrscan.viewmodel.ScanViewModel
 import com.google.mlkit.vision.barcode.BarcodeScannerOptions
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.barcode.common.Barcode
 import com.google.mlkit.vision.common.InputImage
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-
+import java.io.ByteArrayOutputStream
 
 
 class ScanFragment : BaseFragment<FragmentScanBinding>(){
     private var camera : Camera? = null
+    private val viewModel : ScanViewModel by activityViewModels()
     var isHandled = false
+    private var beepEnabled = true
+    private var vibrateEnabled = true
+    private var autoScanEnabled = true
+
 
 
     private var torchOn = false
@@ -70,25 +81,48 @@ class ScanFragment : BaseFragment<FragmentScanBinding>(){
 
     override fun onResume() {
         super.onResume()
+        isHandled = false
+        Log.d("SCAN", "Reset isHandled")
         (activity as? MainActivity)?.showBottomNav(true)
+
+
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA)
+            == PackageManager.PERMISSION_GRANTED) {
+            startCamera()
+        } else {
+
+            requestPermission.launch(Manifest.permission.CAMERA)
+        }
     }
+    override fun onPause() {
+        super.onPause()
+
+        stopCamera()
+    }
+
+
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewLifecycleOwner.lifecycleScope.launch {
-            delay(2000)
 
-            if (!isAdded) return@launch
+        lifecycleScope.launchWhenStarted {
+            viewModel.autoScanEnabled.collect {
+                autoScanEnabled = it
+                isHandled = false
+            }
+        }
 
-            val ctx = context ?: return@launch
+        lifecycleScope.launchWhenStarted {
+            viewModel.beepEnabled.collect {
+                beepEnabled = it
+            }
+        }
 
-            if (ContextCompat.checkSelfPermission(ctx, Manifest.permission.CAMERA)
-                == PackageManager.PERMISSION_GRANTED
-            ) {
-                startCamera()
-            } else {
-                requestPermission.launch(Manifest.permission.CAMERA)
+        lifecycleScope.launchWhenStarted {
+            viewModel.vibrateEnabled.collect {
+                vibrateEnabled = it
             }
         }
 
@@ -96,16 +130,26 @@ class ScanFragment : BaseFragment<FragmentScanBinding>(){
         startScanLineAnimation()
 
     }
+
     private fun scanQRFromGallery(uri : Uri){
         val image = InputImage.fromFilePath(requireContext(),uri)
-        scanner.process(image).addOnSuccessListener {
-            barcodes ->
-            val raw =barcodes.firstOrNull()?.rawValue
-            if(!raw.isNullOrBlank()) Toast.makeText(requireContext(), "Đã quét QR", Toast.LENGTH_SHORT).show()
+        scanner.process(image)
+            .addOnSuccessListener { barcodes ->
+                if (!isHandled) {
+                    val barcode = barcodes.firstOrNull()
+                    if (barcode != null && !barcode.rawValue.isNullOrBlank()) {
+                        isHandled = true
+                        onQrResult(barcode)
+                        ScanSetting.play(
+                            context = requireContext(),
+                            beep = beepEnabled,
+                            vibrate = vibrateEnabled
+                        )
 
-            else Toast.makeText(requireContext(), getString(R.string.not_image), Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
 
-        }
     }
     private fun setUpUiControler(){
 
@@ -158,12 +202,32 @@ class ScanFragment : BaseFragment<FragmentScanBinding>(){
     override fun onDestroyView() {
         super.onDestroyView()
         camera?.cameraControl?.enableTorch(false)
+        stopCamera()
+    }
+    private fun stopCamera() {
+        val context = context ?: return
+        if (!isAdded) return
+
+        try {
+            val cameraProviderFuture = ProcessCameraProvider.getInstance(context)
+            cameraProviderFuture.addListener({
+                val cameraProvider = cameraProviderFuture.get()
+                cameraProvider.unbindAll()
+                camera = null
+                Log.d("SCAN", "Camera stopped")
+            }, ContextCompat.getMainExecutor(context))
+        } catch (e: Exception) {
+            Log.e("SCAN", "Error stopping camera: ${e.message}")
+        }
     }
 
 
     @OptIn(ExperimentalGetImage::class)
     private fun startCamera() {
-        val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
+        val context = context ?: return
+        if (!isAdded) return
+        Log.e("START", "startCamera() CALLED")
+        val cameraProviderFuture = ProcessCameraProvider.getInstance(context)
 
         cameraProviderFuture.addListener({
             val cameraProvider = cameraProviderFuture.get()
@@ -178,26 +242,42 @@ class ScanFragment : BaseFragment<FragmentScanBinding>(){
                 .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                 .build()
 
-            analyzer.setAnalyzer(ContextCompat.getMainExecutor(requireContext())) { imageProxy ->
-                val media = imageProxy.image ?: return@setAnalyzer imageProxy.close()
+                analyzer.setAnalyzer(ContextCompat.getMainExecutor(requireContext())) { imageProxy ->
 
-                val image = InputImage.fromMediaImage(media, imageProxy.imageInfo.rotationDegrees)
 
-                scanner.process(image)
-                    .addOnSuccessListener { barcodes ->
-                        if (!isHandled) {
-                            val raw = barcodes.firstOrNull()?.rawValue
-                            if (!raw.isNullOrBlank()) {
-                                isHandled = true
-                                onQrResult(raw)
+                    if (!autoScanEnabled || isHandled) {
+                        imageProxy.close()
+                        return@setAnalyzer
+                    }
+                    Log.d("SCAN", "autoScan=$autoScanEnabled isHandled=$isHandled")
+
+
+                    val media = imageProxy.image
+                    if (media == null) {
+                        imageProxy.close()
+                        return@setAnalyzer
+                    }
+
+                    val image = InputImage.fromMediaImage(media, imageProxy.imageInfo.rotationDegrees)
+
+                    scanner.process(image)
+                        .addOnSuccessListener { barcodes ->
+                            if (!isHandled) {
+                                val barcode = barcodes.firstOrNull()
+                                if (barcode != null && !barcode.rawValue.isNullOrBlank()) {
+                                    isHandled = true
+                                    onQrResult(barcode)
+                                }
                             }
                         }
-                    }
-                    .addOnCompleteListener { imageProxy.close() }
-            }
+                        .addOnCompleteListener {
+                            imageProxy.close()
+                        }
+                }
 
 
-            camera = cameraProvider.bindToLifecycle(
+
+                camera = cameraProvider.bindToLifecycle(
                 viewLifecycleOwner,
                 cameraSelector,
                 preview,
@@ -213,9 +293,49 @@ class ScanFragment : BaseFragment<FragmentScanBinding>(){
         }, ContextCompat.getMainExecutor(requireContext()))
     }
 
-    private fun onQrResult(text: String) {
-        Toast.makeText(requireContext(), "QR: $text", Toast.LENGTH_LONG).show()
+
+    private fun onQrResult(barcode: Barcode) {
+
+        val parsed = QRBarcodeParser.parseBarcode(barcode)
+
+
+        val qrBitmap = GenerateQR.generateQR(parsed.content)
+
+        viewModel.byteScanQR = qrBitmap.toByteArray()
+        viewModel.content=parsed.content
+        viewModel.setUserScan(parsed.data)
+
+        viewModel.setCreateOption(parsed.type)
+        ScanSetting.play(
+            context = requireContext(),
+            beep = beepEnabled,
+            vibrate = vibrateEnabled
+        )
+
+
+
+
+        if (viewModel.isSave) {
+            viewModel.saveScanned(
+                id = 0,
+                type = parsed.type,
+                content = parsed.content,
+                data = parsed.data
+            )
+            Log.d("SCAN", "Saved content = ${parsed.content}")
+        } else {
+            Log.d("SCAN", "History saving is disabled")
+        }
+            Log.d("SCAN", "Saved content = ${parsed.content}")
+
+        val next = requireActivity().findViewById<ViewPager2>(R.id.viewPager)
+        next.currentItem = next.currentItem + 7
+        next.isUserInputEnabled = false
+
+
     }
+
+
     private fun startScanLineAnimation() {
         val frame = mBinding.framecamera
         val line = mBinding.scanLine
@@ -237,6 +357,12 @@ class ScanFragment : BaseFragment<FragmentScanBinding>(){
             }
         })
     }
+    fun Bitmap.toByteArray(): ByteArray {
+        val stream = ByteArrayOutputStream()
+        compress(Bitmap.CompressFormat.PNG, 100, stream)
+        return stream.toByteArray()
+    }
+
 
 
 

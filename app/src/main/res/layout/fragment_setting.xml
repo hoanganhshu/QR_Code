@@ -15,6 +15,7 @@
                 android:layout_width="match_parent"
                 android:text="@string/setting"
                 android:textStyle="bold"
+                android:fontFamily="@font/poppin_family"
                 android:id="@+id/setting"
                 android:background="@color/base"
                 android:textColor="@color/white"
@@ -34,7 +35,7 @@
                 android:layout_marginTop="@dimen/_23sdp"
                 android:paddingHorizontal="@dimen/_20sdp"
                 android:id="@+id/go_premium"
-                android:src="@drawable/go_premium"
+                android:src="@drawable/premium"
                 android:layout_height="@dimen/_132sdp"/>
 
 
@@ -42,6 +43,7 @@
                 android:layout_width="match_parent"
                 android:textSize="@dimen/_16sdp"
                 android:layout_marginTop="@dimen/_40sdp"
+                android:fontFamily="@font/poppin_family"
                 android:textColor="@color/base"
                 android:textStyle="bold"
                 android:layout_marginStart="@dimen/_15sdp"
@@ -84,12 +86,14 @@
                         android:id="@+id/title1"
                         android:textStyle="bold"
                         android:textSize="@dimen/_13sdp"
+                        android:fontFamily="@font/poppin_family"
                         android:text="@string/vibrate"
 
                         />
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:fontFamily="@font/poppin_family"
                         android:text="@string/subtitle_vibrate"
                         android:textColor="@color/hint"
                         android:textSize="@dimen/_12sdp"
@@ -102,9 +106,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/switchvibrate"
+
                     android:layout_gravity="end"
-                    app:thumbTint="@color/switch_thumb"
-                    app:trackTint="@color/switch_track"
+
+                    android:thumb="@drawable/thumb_custom"
+
+
+
+                   app:track="@drawable/track_custom"
+
 
 
 
@@ -156,12 +166,14 @@
                         android:layout_height="@dimen/_25sdp"
                         android:id="@+id/title2"
                         android:textStyle="bold"
+                        android:fontFamily="@font/poppin_family"
                         android:textSize="@dimen/_13sdp"
                         android:text="@string/beep"
 
                         />
                     <TextView
                         android:layout_width="match_parent"
+                        android:fontFamily="@font/poppin_family"
                         android:layout_height="match_parent"
                         android:text="@string/subtitle_beep"
                         android:textColor="@color/hint"
@@ -176,8 +188,11 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/switchvibeep"
                     android:layout_gravity="end"
-                    app:thumbTint="@color/switch_thumb"
-                    app:trackTint="@color/switch_track"
+                    android:thumb="@drawable/thumb_custom"
+
+
+
+                    app:track="@drawable/track_custom"
 
 
 
@@ -227,6 +242,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/_25sdp"
                         android:id="@+id/title3"
+                        android:fontFamily="@font/poppin_family"
                         android:textStyle="bold"
                         android:textSize="@dimen/_13sdp"
                         android:text="@string/history"
@@ -234,6 +250,7 @@
                         />
                     <TextView
                         android:layout_width="match_parent"
+                        android:fontFamily="@font/poppin_family"
                         android:layout_height="match_parent"
                         android:text="@string/subtitle_history"
                         android:textColor="@color/hint"
@@ -248,8 +265,11 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/switchhistory"
                     android:layout_gravity="end"
-                    app:thumbTint="@color/switch_thumb"
-                    app:trackTint="@color/switch_track"
+                    android:thumb="@drawable/thumb_custom"
+
+
+
+                    app:track="@drawable/track_custom"
 
 
 
@@ -299,6 +319,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/_25sdp"
                         android:id="@+id/title4"
+                        android:fontFamily="@font/poppin_family"
                         android:textStyle="bold"
                         android:textSize="@dimen/_13sdp"
                         android:text="@string/scan"
@@ -306,6 +327,7 @@
                         />
                     <TextView
                         android:layout_width="match_parent"
+                        android:fontFamily="@font/poppin_family"
                         android:layout_height="match_parent"
                         android:text="@string/subtitle_scan"
                         android:textColor="@color/hint"
@@ -320,8 +342,13 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/switchscan"
                     android:layout_gravity="end"
-                    app:thumbTint="@color/switch_thumb"
-                    app:trackTint="@color/switch_track"
+                    android:thumb="@drawable/thumb_custom"
+                    android:checked="true"
+
+
+
+                    app:track="@drawable/track_custom"
+
 
 
 
@@ -371,6 +398,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/_25sdp"
                         android:id="@+id/title5"
+                        android:fontFamily="@font/poppin_family"
                         android:textStyle="bold"
                         android:textSize="@dimen/_13sdp"
                         android:text="@string/language"
@@ -378,6 +406,7 @@
                         />
                     <TextView
                         android:layout_width="match_parent"
+                        android:fontFamily="@font/poppin_family"
                         android:layout_height="match_parent"
                         
                         android:textColor="@color/hint"
@@ -388,10 +417,11 @@
 
                 </LinearLayout>
               <TextView
-                  android:layout_width="@dimen/_46sdp"
+                  android:layout_width="wrap_content"
                   android:layout_height="@dimen/_21sdp"
                   android:textColor="@color/base"
                   android:text="@string/english"
+                  android:id="@+id/txtlanguage"
                   android:textSize="@dimen/_13sdp"
 
                   />
@@ -414,6 +444,7 @@
                 android:layout_marginTop="@dimen/_10sdp"
                 android:textColor="@color/base"
                 android:textStyle="bold"
+                android:fontFamily="@font/poppin_family"
                 android:layout_marginStart="@dimen/_15sdp"
                 android:id="@+id/support"
                 android:layout_height="wrap_content"
@@ -444,6 +475,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/_25sdp"
+                        android:fontFamily="@font/poppin_family"
                         android:id="@+id/title6"
                         android:layout_marginStart="@dimen/_10sdp"
                         android:textStyle="bold"
@@ -488,6 +520,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_25sdp"
+                    android:fontFamily="@font/poppin_family"
                     android:id="@+id/title7"
                     android:layout_marginStart="@dimen/_10sdp"
                     android:textStyle="bold"
@@ -538,6 +571,7 @@
                     android:layout_marginStart="@dimen/_10sdp"
                     android:textStyle="bold"
                     android:textSize="@dimen/_13sdp"
+                    android:fontFamily="@font/poppin_family"
                     android:text="@string/feeaback"
 
                     />
@@ -581,6 +615,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_25sdp"
                     android:id="@+id/title9"
+                    android:fontFamily="@font/poppin_family"
                     android:layout_marginStart="@dimen/_10sdp"
                     android:textStyle="bold"
                     android:textSize="@dimen/_13sdp"

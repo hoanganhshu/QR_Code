@@ -27,11 +27,12 @@
         <TextView
             android:layout_width="match_parent"
             android:text="@string/create"
+            android:fontFamily="@font/poppin_family"
             android:textStyle="bold"
             android:id="@+id/create"
             android:background="@color/base"
             android:textColor="@color/white"
-            android:textSize="@dimen/_18sdp"
+            android:textSize="18sp"
 
             android:paddingTop="29dp"
 
@@ -45,8 +46,9 @@
         <TextView
             android:layout_width="wrap_content"
             android:id="@+id/createtitle"
+            android:fontFamily="@font/poppin_family"
             android:text="@string/createtitle"
-            android:textSize="@dimen/_18sdp"
+            android:textSize="18sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/create"
             android:textStyle="bold"
@@ -104,7 +106,8 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="20dp"
+                        android:layout_marginBottom="15dp"
+                        android:fontFamily="@font/poppin_family"
                         android:text="@string/phone"
                         android:layout_gravity="center_horizontal|bottom" />
                 </com.google.android.material.card.MaterialCardView>
@@ -147,7 +150,8 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="20dp"
+                        android:fontFamily="@font/poppin_family"
+                        android:layout_marginBottom="15dp"
                         android:text="@string/email"
                         android:layout_gravity="center_horizontal|bottom" />
                 </com.google.android.material.card.MaterialCardView>
@@ -187,8 +191,9 @@
 
                     <TextView
                         android:layout_width="wrap_content"
+                        android:fontFamily="@font/poppin_family"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="20dp"
+                        android:layout_marginBottom="15dp"
                         android:text="@string/url"
                         android:layout_gravity="center_horizontal|bottom" />
                 </com.google.android.material.card.MaterialCardView>
@@ -229,7 +234,8 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="20dp"
+                        android:layout_marginBottom="15dp"
+                        android:fontFamily="@font/poppin_family"
                         android:text="@string/sms"
                         android:layout_gravity="center_horizontal|bottom" />
                 </com.google.android.material.card.MaterialCardView>
@@ -270,7 +276,9 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="20dp"
+                        android:layout_marginBottom="15dp"
+                        android:fontFamily="@font/poppin_family"
+
                         android:text="@string/contact"
                         android:layout_gravity="center_horizontal|bottom" />
                 </com.google.android.material.card.MaterialCardView>
@@ -312,7 +320,8 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="20dp"
+                        android:layout_marginBottom="15dp"
+                        android:fontFamily="@font/poppin_family"
                         android:text="@string/text"
                         android:layout_gravity="center_horizontal|bottom" />
                 </com.google.android.material.card.MaterialCardView>
@@ -352,7 +361,8 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="20dp"
+                        android:layout_marginBottom="15dp"
+                        android:fontFamily="@font/poppin_family"
                         android:text="@string/wifi"
                         android:layout_gravity="center_horizontal|bottom" />
                 </com.google.android.material.card.MaterialCardView>
@@ -392,7 +402,8 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="20dp"
+                        android:layout_marginBottom="15dp"
+                        android:fontFamily="@font/poppin_family"
                         android:text="@string/calendar"
 
                         android:layout_gravity="center_horizontal|bottom" />
@@ -433,7 +444,8 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="20dp"
+                        android:layout_marginBottom="15dp"
+                        android:fontFamily="@font/poppin_family"
                         android:text="@string/location"
                         android:layout_gravity="center_horizontal|bottom" />
                 </com.google.android.material.card.MaterialCardView>
@@ -443,60 +455,6 @@
 
 
         </GridLayout>
-        <TextView
-            android:layout_width="wrap_content"
-            android:id="@+id/barcodetitle"
-            android:text="@string/barcode"
-            android:textSize="@dimen/_18sdp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/optiongrildeview"
-            android:textStyle="bold"
-            android:textColor="@color/black"
-            android:layout_marginTop="@dimen/_32sdp"
-            android:layout_marginStart="@dimen/_24sdp"
-            android:layout_height="wrap_content"
-
-            />
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="85dp"
-            android:layout_height="111dp"
-            android:layout_marginStart="@dimen/_5sdp"
-            app:layout_constraintStart_toStartOf="@id/optiongrildeview"
-            android:layout_marginTop="@dimen/_24sdp"
-            android:id="@+id/barcode"
-            app:strokeWidth="2dp"
-            android:padding="5dp"
-            app:layout_constraintTop_toBottomOf="@id/barcodetitle"
-            app:strokeColor="#CDD0E3"
-            app:cardCornerRadius="@dimen/_12sdp">
-
-            <ImageView
-                android:layout_width="@dimen/_36sdp"
-                android:layout_height="@dimen/_36sdp"
-                android:padding="@dimen/_5sdp"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/_19sdp"
-                android:src="@drawable/barcode39" />
-
-            <View
-                android:layout_width="70dp"
-                android:layout_height="@dimen/_1sdp"
-                android:background="#CDD0E3"
-
-                android:layout_marginTop="@dimen/_11sdp"
-                android:layout_gravity="center" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:text="@string/code39"
-                android:layout_gravity="center_horizontal|bottom" />
-        </com.google.android.material.card.MaterialCardView>
-
-
-
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -1,5 +1,6 @@
 package com.example.qrscan.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
@@ -17,6 +18,7 @@ abstract class BaseAdapter<T> :  RecyclerView.Adapter<BaseAdapter<T>.ViewHolder>
     private var itemClickListener: OnItemClickListener<T>? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseAdapter<T>.ViewHolder {
+        Log.d("BASE_ADAPTER", "onCreateViewHolder called")
         val inflater = LayoutInflater.from(parent.context)
         val binding = DataBindingUtil.inflate<ViewDataBinding>(
             inflater,
@@ -25,13 +27,7 @@ abstract class BaseAdapter<T> :  RecyclerView.Adapter<BaseAdapter<T>.ViewHolder>
             false
         )
 
-        binding.root.layoutParams = RecyclerView.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT
-        )
-
         return ViewHolder(binding)
-
     }
     abstract fun setData(binding : ViewDataBinding,item : T,position : Int)
 
@@ -44,22 +40,29 @@ abstract class BaseAdapter<T> :  RecyclerView.Adapter<BaseAdapter<T>.ViewHolder>
     }
 
     override fun onBindViewHolder(holder: BaseAdapter<T>.ViewHolder, position: Int) {
-
-        holder.bind(list[position])
-        itemClickListener?.onItemClick(list[position], position = position)
+        Log.d("BASE_ADAPTER", "onBindViewHolder called for position $position, list size = ${list.size}")
+        if (position < list.size) {
+            holder.bind(list[position])
+            itemClickListener?.onItemClick(list[position], position = position)
+        }
     }
 
 
     override fun getItemCount(): Int {
-       if (list.isNotEmpty()){
-            return  list.size
+        val count = if (list.isNotEmpty()) {
+            list.size
+        } else {
+            0
         }
-        return 0
+        Log.d("BASE_ADAPTER", "getItemCount() = $count, list.size = ${list.size}")
+        return count
     }
     fun submitData(newData: List<T>) {
         list.clear()
         list.addAll(newData)
+
         notifyDataSetChanged()
+        Log.d("BASE_ADAPTER", "notifyDataSetChanged() called")
     }
     interface OnItemClickListener<T> {
         fun onItemClick(item: T, position: Int)

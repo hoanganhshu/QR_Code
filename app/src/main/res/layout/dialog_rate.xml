@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_290sdp"
+        android:layout_marginHorizontal="@dimen/_50sdp"
+        android:layout_marginTop="@dimen/_20sdp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:cardCornerRadius="15dp"
+        app:strokeColor="#DCDCF0"
+        app:strokeWidth="1dp"
+
+        >
+
+
+        <ImageView
+            android:id="@+id/image"
+            android:layout_width="170dp"
+            android:layout_height="134dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="20dp"
+            app:srcCompat="@drawable/image_rating" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/giverating"
+            android:layout_marginHorizontal="20dp"
+            android:fontFamily="@font/poppin_family"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center_horizontal"
+            android:layout_marginTop="215dp"
+
+            />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/giveratingonchplay"
+            android:layout_marginHorizontal="20dp"
+            android:fontFamily="@font/poppin_family"
+            android:textSize="13sp"
+
+            android:textColor="#B4B7CC"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center_horizontal"
+            android:layout_marginTop="270dp"
+
+            />
+        <RatingBar
+            android:id="@+id/ratingBar"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:numStars="5"
+            android:stepSize="1"
+
+            android:isIndicator="false"
+            android:progressTint="@color/yellow"
+            android:layout_gravity="center_horizontal"
+            android:secondaryProgressTint="@color/yellow"
+            android:indeterminateTint="@color/yellow"
+            android:layout_marginTop="160dp" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_gravity="bottom"
+
+            >
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:text="@string/not_allow"
+                android:fontFamily="@font/poppin_family"
+                android:gravity="center"
+                android:id="@+id/cancel"
+                android:paddingLeft="10dp"
+
+                android:textSize="17sp"
+                android:textColor="#3C52F5"
+
+                />
+            <View android:layout_height="match_parent"
+                android:layout_width="1dp"
+                android:background="#DCDCF0"
+                />
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:fontFamily="@font/poppin_family"
+                android:layout_height="match_parent"
+                android:text="@string/ok"
+                android:gravity="center"
+                android:id="@+id/accept"
+
+                android:textSize="17sp"
+                android:paddingRight="10dp"
+                android:textColor="#3C52F5"
+
+                />
+
+
+
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

@@ -1,14 +1,19 @@
 package com.example.qrscan.view
 
 import android.R.attr.data
+import android.R.attr.visibility
 import android.content.Intent
 import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewParent
+import android.widget.ImageView
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat.startActivity
 import androidx.core.content.FileProvider
@@ -21,17 +26,20 @@ import com.example.qrscan.BaseFragment
 import com.example.qrscan.MainActivity
 import com.example.qrscan.R
 import com.example.qrscan.adapter.AdapterGenerate
+import com.example.qrscan.adapter.AdapterGenerateInMonth
 import com.example.qrscan.adapter.Callback
 import com.example.qrscan.adapter.generateMonth
 import com.example.qrscan.database.data.DataGenerateInMonth
 import com.example.qrscan.database.data.QRCodeEntity
 import com.example.qrscan.database.data.QRType
+import com.example.qrscan.databinding.BottomSelectItemsBinding
 import com.example.qrscan.databinding.FragmentGenerateBinding
 import com.example.qrscan.viewmodel.ScanViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileOutputStream
+import java.nio.file.Files.delete
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -46,11 +54,19 @@ private const val ARG_PARAM2 = "param2"
  * Use the [GenerateFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class GenerateFragment : BaseFragment<FragmentGenerateBinding>(){
+class GenerateFragment : BaseFragment<FragmentGenerateBinding>(), Callback{
     private val viewModel : ScanViewModel by activityViewModels()
 
     private lateinit var listview: Flow<List<QRCodeEntity>>
     private lateinit var adapter: AdapterGenerate
+    private var isSelectMode = false
+    private var selectedIds = listOf<Int>()
+
+    private lateinit var childAdapter: AdapterGenerateInMonth
+
+
+
+
 
 
     override fun inflate(
@@ -61,12 +77,39 @@ class GenerateFragment : BaseFragment<FragmentGenerateBinding>(){
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        val next = requireActivity().findViewById<ViewPager2>(R.id.viewPager)
+        next.isUserInputEnabled = false
         super.onViewCreated(view, savedInstanceState)
+        (activity as? MainActivity)?.showBottomNav(true)
+
+
+
+
 
 
         mBinding.createnow.setOnClickListener {
-            val next = requireActivity().findViewById<ViewPager2>(R.id.viewPager)
+
             next.currentItem = next.currentItem + 2
+        }
+        mBinding.generate.setOnClickListener {
+            val next = requireActivity().findViewById<ViewPager2>(R.id.viewPager)
+
+
+            next.currentItem = 8
+        }
+        mBinding.root.setOnClickListener { clickedView ->
+            if (isSelectMode) {
+                val recyclerView = mBinding.recyclerview
+                val bottomSelect = requireActivity().findViewById<View>(R.id.bottomSelect)
+
+
+                if (!isViewInsideView(clickedView, recyclerView) &&
+                    !isViewInsideView(clickedView, bottomSelect)) {
+
+                    clearAllChildAdaptersSelection()
+                    bottomSelect.visibility = View.GONE
+                }
+            }
         }
         (activity as? MainActivity)?.showBottomNav(true)
         listview=viewModel.getAll()
@@ -82,8 +125,12 @@ class GenerateFragment : BaseFragment<FragmentGenerateBinding>(){
                     mBinding.createnow.visibility=View.GONE
                     mBinding.createsubtitle.visibility=View.GONE
                     mBinding.recyclerview.visibility=View.VISIBLE
-                    val monthFormat = SimpleDateFormat("MMM yyyy", Locale.US)
-                    val dateFormat = SimpleDateFormat("dd:MM,yyyy ", Locale.US)
+
+                    val appLocales = AppCompatDelegate.getApplicationLocales()
+                    val locale = appLocales.get(0) ?: Locale("en", "US")
+
+                    val monthFormat = SimpleDateFormat("MMM yyyy", locale)
+                    val dateFormat = SimpleDateFormat("dd:MM,yyyy ", locale)
 
 
 
@@ -120,44 +167,21 @@ class GenerateFragment : BaseFragment<FragmentGenerateBinding>(){
                             })
 
                 }
-                   adapter = AdapterGenerate(object : Callback{
-                        override fun onEdit(item: DataGenerateInMonth) { lifecycleScope.launch {
-
-                            viewModel.itemIdCreate=item.id
-                            Log.d("RecyclerViewData", "Data id: ${item.id},${item.title}")
-
-                            val next = requireActivity().findViewById<ViewPager2>(R.id.viewPager)
-                            next.currentItem = 9
-                        }
-
-
-
-                        }
-
-                        override fun onDelete(item: DataGenerateInMonth) {
-                            lifecycleScope.launch {
-                                viewModel.deleteById(item.id)}
-
-                        }
-
-                        override fun onShare(item: DataGenerateInMonth) {
-                            lifecycleScope.launch {
-                                val qr=viewModel.getById(item.id)
-                                if(qr!=null){
-                                    val bitmap = GenerateQR.generateQR(qr.content)
-                                    shareBitmapAsPng(bitmap)
-                                }
-
-                                }
-
-
-                        }
-
-                    })
+                   childAdapter = AdapterGenerateInMonth(this@GenerateFragment )
+                    adapter = AdapterGenerate(this@GenerateFragment)
                     mBinding.recyclerview.layoutManager = LinearLayoutManager(requireContext())
                     mBinding.recyclerview.adapter = adapter
 
                     adapter.submitData(grouped)
+//                    mBinding.bottomSelect.delete.setOnClickListener {
+//                        lifecycleScope.launch {
+//                            viewModel.deleteListByid(selectedIds)
+//                            selectedIds = emptyList()
+//                            childAdapter.clearSelectionMode()
+//                            bottomLayout.visibility = View.GONE
+//                        }
+//                    }
+
 
                 }
         }
@@ -166,13 +190,40 @@ class GenerateFragment : BaseFragment<FragmentGenerateBinding>(){
 
 
     }}
-
-    override fun onResume() {
-        super.onResume()
-        (activity as? MainActivity)?.showBottomNav(true)
-
-
+    private fun isViewInsideView(view: View, parentView: View): Boolean {
+        var currentParent: ViewParent? = view.parent
+        while (currentParent != null) {
+            if (currentParent === parentView) {
+                return true
+            }
+            currentParent = currentParent.parent
+        }
+        return false
     }
+    private fun clearAllChildAdaptersSelection() {
+        Log.d("GENERATE", "clearAllChildAdaptersSelection called")
+
+
+        for (i in 0 until mBinding.recyclerview.childCount) {
+            val childView = mBinding.recyclerview.getChildAt(i)
+
+
+            val childRecyclerView = childView.findViewById<RecyclerView>(R.id.recyclerview)
+
+            childRecyclerView?.adapter?.let { adapter ->
+                if (adapter is AdapterGenerateInMonth) {
+                    Log.d("GENERATE", "Found child adapter, clearing selection")
+                    adapter.clearSelectionMode()
+                }
+            }
+        }
+
+        Log.d("GENERATE", "Finished clearing all adapters")
+    }
+
+
+
+
     private fun shareBitmapAsPng(bitmap: Bitmap) {
         val file = File(requireContext().cacheDir, "qr_shared.png")
         FileOutputStream(file).use { out ->
@@ -192,6 +243,118 @@ class GenerateFragment : BaseFragment<FragmentGenerateBinding>(){
         }
 
         startActivity(Intent.createChooser(intent, "Share QR Code"))
+    }
+    private fun shareMultipleBitmapsAsPng(bitmaps: List<Bitmap>) {
+        if (bitmaps.isEmpty()) return
+
+        val uris = ArrayList<Uri>()
+        val cacheDir = requireContext().cacheDir
+
+
+        bitmaps.forEachIndexed { index, bitmap ->
+            val file = File(cacheDir, "qr_shared_$index.png")
+            FileOutputStream(file).use { out ->
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
+            }
+
+            val uri = FileProvider.getUriForFile(
+                requireContext(),
+                requireContext().packageName + ".provider",
+                file
+            )
+            uris.add(uri)
+        }
+
+
+        val intent = Intent(Intent.ACTION_SEND_MULTIPLE).apply {
+            type = "image/png"
+            putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris)
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        }
+
+        startActivity(Intent.createChooser(intent, "Share QR Codes"))
+    }
+
+
+    override fun onEdit(item: DataGenerateInMonth) {
+        viewModel.itemIdCreate=item.id
+        Log.d("RecyclerViewData", "Data id: ${item.id},${item.title}")
+        val next = requireActivity().findViewById<ViewPager2>(R.id.viewPager)
+
+
+        next.currentItem = 9
+    }
+
+    override fun onDelete(item: DataGenerateInMonth) {
+        lifecycleScope.launch {
+            viewModel.deleteById(item.id)}
+    }
+
+    override fun onShare(item: DataGenerateInMonth) {
+        lifecycleScope.launch {
+            val qr = viewModel.getById(item.id)
+            if (qr != null) {
+                val bitmap = GenerateQR.generateQR(qr.content)
+                shareBitmapAsPng(bitmap)
+            }
+        }
+    }
+
+    override fun onSelectionMode(isLongPressed: Boolean) {
+        isSelectMode = isLongPressed
+        Log.d("RecyclerViewData", "Data id: ${isSelectMode}")
+
+        (activity as? MainActivity)?.showBottomNav(!isSelectMode)
+        val bottomSelect = requireActivity().findViewById<View>(R.id.bottomSelect)
+        val deleteButton = bottomSelect?.findViewById<ImageView>(R.id.delete)
+        val downloadButton = bottomSelect?.findViewById<ImageView>(R.id.download)
+      if (isSelectMode){
+          bottomSelect.visibility=View.VISIBLE
+
+
+          deleteButton?.setOnClickListener {
+              lifecycleScope.launch {
+                  viewModel.deleteCustomQRListByid(selectedIds)
+                  selectedIds = emptyList()
+                  childAdapter.clearSelectionMode()
+                  bottomSelect.visibility = View.GONE
+              }
+          }
+          downloadButton?.setOnClickListener {
+
+              if (selectedIds.isEmpty()) {
+
+                  return@setOnClickListener
+              }
+
+              lifecycleScope.launch {
+
+                  val qrCodes = selectedIds.mapNotNull { id ->
+                      viewModel.getById(id)
+                  }
+
+
+                  val bitmaps = qrCodes.map { qr ->
+                      GenerateQR.generateQR(qr.content)
+                  }
+
+
+                  shareMultipleBitmapsAsPng(bitmaps)
+
+
+                  selectedIds = emptyList()
+                  childAdapter.clearSelectionMode()
+                  bottomSelect.visibility = View.GONE
+          }
+      }}
+        else {
+            bottomSelect.visibility=View.GONE
+      }
+    }
+
+    override fun onSelectedIdsChanged(ids: List<Int>) {
+        selectedIds = ids
+//        bottomLayout.delete.isEnabled = selectedIds.isNotEmpty()
     }
 
 

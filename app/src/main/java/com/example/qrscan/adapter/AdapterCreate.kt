@@ -1,6 +1,7 @@
 package com.example.qrscan.adapter
 
 import android.text.Editable
+import android.text.InputType
 import android.text.TextWatcher
 import android.util.Log
 import androidx.databinding.ViewDataBinding
@@ -23,6 +24,9 @@ class AdapterCreate : BaseAdapter<Map<String, Any?>>() {
 
         mBinding.title.text = title
         mBinding.subtitle.hint = hint
+        val inputType = (item["inputType"] as? Int)
+            ?: (InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES)
+        mBinding.subtitle.inputType = inputType
 
 
         mBinding.subtitle.setText(inputMap[key] ?: "")
@@ -62,6 +66,7 @@ class AdapterCreate : BaseAdapter<Map<String, Any?>>() {
 
         Log.d("PREFILL", "END prefill inputMap=$inputMap")
     }
+
 }
 
 

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:clickable="false"
+    android:focusable="false"
+    android:layout_height="wrap_content"
+    tools:context=".MainActivity">
+
+    
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_55sdp"
+        android:clickable="false"
+        android:focusable="false"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        >
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:clickable="false"
+          android:focusable="false"
+          android:orientation="horizontal"
+          
+          >
+          <ImageView
+              android:layout_width="24dp"
+              android:layout_gravity="start|center_vertical"
+              android:layout_marginStart="@dimen/_20sdp"
+
+              android:layout_height="24dp"
+              android:src="@drawable/icon_share"
+              android:id="@+id/download"
+              />
+          <TextView
+              android:layout_width="0dp"
+              android:gravity="center"
+              android:layout_weight="1"
+              android:text="@string/numberfileselect"
+              android:textColor="@color/black"
+              android:fontFamily="@font/poppin_family"
+              android:textStyle="bold"
+
+
+              android:clickable="false"
+              android:focusable="false"
+              android:textSize="@dimen/_14sdp"
+              android:layout_gravity="center"
+              android:layout_marginHorizontal="60dp"
+              android:layout_height="wrap_content"
+              />
+          <ImageView
+              android:layout_width="24dp"
+              android:layout_gravity="end|center_vertical"
+              android:layout_marginEnd="@dimen/_20sdp"
+              android:src="@drawable/icon_delete"
+
+              android:layout_height="24dp"
+              android:id="@+id/delete"
+              />
+          
+          
+          
+      </LinearLayout>
+        
+        
+        
+        
+        
+    </com.google.android.material.card.MaterialCardView>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -25,6 +25,7 @@
         android:text="@string/create"
         android:textStyle="bold"
         android:id="@+id/create"
+        android:fontFamily="@font/poppin_family"
         android:background="@color/base"
         android:textColor="@color/white"
         android:textSize="@dimen/_18sdp"
@@ -78,6 +79,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="27dp"
+                    android:fontFamily="@font/poppin_family"
                     android:id="@+id/title"
                     android:text="@string/text"
                     android:textStyle="bold"
@@ -89,6 +91,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppin_family"
                     android:id="@+id/subtitle"
                     android:text="@string/example"
                     android:textColor="#B4B7CC"
@@ -149,6 +152,7 @@
                 android:text="@string/cancel"
                 android:gravity="center"
                 android:id="@+id/cancel"
+                android:fontFamily="@font/poppin_family"
                 android:layout_gravity="center"
                 android:textSize="20dp"
                 android:textColor="@color/base"
@@ -165,6 +169,7 @@
                 android:layout_weight="1"
                 android:text="@string/save"
                 android:gravity="center"
+                android:fontFamily="@font/poppin_family"
 
                 android:id="@+id/save"
                 android:layout_gravity="center"

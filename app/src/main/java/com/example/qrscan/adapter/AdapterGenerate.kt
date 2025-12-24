@@ -1,8 +1,10 @@
 package com.example.qrscan.adapter
 
 import android.content.Context
+import android.view.MotionEvent
 import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.qrscan.R
 import com.example.qrscan.database.data.DataGenerateInMonth
 import com.example.qrscan.databinding.ItemDayGenerateBinding
@@ -19,13 +21,14 @@ class AdapterGenerate(private val callback: Callback) : BaseAdapter<generateMont
         return R.layout.item_day_generate
     }
 
+
     override fun setData(
         binding: ViewDataBinding,
         item: generateMonth,
         position: Int
     ) {
        val mBinding = binding as ItemDayGenerateBinding
-        mBinding.view1.setText(item.createAt)
+        mBinding.createin.setText(item.createAt)
         val childAdapter = AdapterGenerateInMonth(callback)
         val context = mBinding.recyclerview.context
 
@@ -35,6 +38,20 @@ class AdapterGenerate(private val callback: Callback) : BaseAdapter<generateMont
 
 
         childAdapter.submitData(item.items)
+        mBinding.recyclerview.addOnItemTouchListener(object : RecyclerView.OnItemTouchListener {
+            override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
+                return false
+            }
+
+            override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {
+
+            }
+
+            override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {
+
+            }
+        })
 
     }
+
 }

@@ -51,6 +51,7 @@
             />
         <ImageView
             android:layout_width="24dp"
+            android:id="@+id/generate"
             android:layout_height="24dp"
             android:layout_marginTop="@dimen/_29sdp"
             android:layout_marginStart="@dimen/_23sdp"
@@ -67,6 +68,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/poppin_family"
             android:textSize="@dimen/_12sdp"
             android:text="@string/history_title"
             android:layout_marginTop="@dimen/_65sdp"
@@ -76,6 +78,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/poppin_family"
             android:textSize="@dimen/_20sdp"
             android:text="@string/history_subtitle"
             android:textStyle="bold"
@@ -96,6 +99,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:textColor="#B4B7CC"
         android:textSize="@dimen/_17sdp"
+        android:fontFamily="@font/poppin_family"
+        android:id="@+id/subtitle"
         android:textAlignment="center"
         app:layout_constraintBottom_toTopOf="@id/scannow"
         android:layout_marginBottom="@dimen/_25sdp"
@@ -122,6 +127,7 @@
             android:layout_height="@dimen/_24sdp"
             android:id="@+id/tvscannow"
             android:text="@string/scannow"
+            android:fontFamily="@font/poppin_family"
             android:layout_gravity="center"
             android:textColor="@color/white"
             android:gravity="center"

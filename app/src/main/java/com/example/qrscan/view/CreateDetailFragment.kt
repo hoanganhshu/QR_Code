@@ -3,6 +3,7 @@ package com.example.qrscan.view
 import android.R.attr.data
 import android.graphics.Bitmap
 import android.os.Bundle
+import android.text.InputType
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -20,6 +21,7 @@ import com.example.qrscan.MainActivity
 import com.example.qrscan.R
 import com.example.qrscan.adapter.AdapterCreate
 import com.example.qrscan.database.data.QRCodeEntity
+import com.example.qrscan.database.data.QRType
 import com.example.qrscan.databinding.FragmentCreateDetailBinding
 import com.example.qrscan.viewmodel.ScanViewModel
 import kotlinx.coroutines.launch
@@ -51,6 +53,8 @@ class CreateDetailFragment : BaseFragment<FragmentCreateDetailBinding>(){
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val next = requireActivity().findViewById<ViewPager2>(R.id.viewPager)
+        next.isUserInputEnabled = false
         adapter = AdapterCreate()
         mBinding.recyclerview.layoutManager = LinearLayoutManager(requireContext())
         mBinding.recyclerview.adapter = adapter
@@ -65,36 +69,37 @@ class CreateDetailFragment : BaseFragment<FragmentCreateDetailBinding>(){
                     fillUI(qr)
                 }
                 else {
+
                     Log.d("RecyclerView", "Data size: ${data.size}")
 
 
                 }
 
 
-
-
-
-
             }
         }
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.createOption.collect { opt ->
-                    if (!opt.isNullOrBlank()) {
-                        if (qrid != 0) return@collect
-                        mBinding.create.setText(opt)
-                        fillInforGenerate(opt)
-                        adapter.submitData(data)
-                    }
+                viewModel.createOption.collect { type ->
+                    if (type == null) return@collect
+                    if (qrid != 0) return@collect
+
+
+                    mBinding.create.text = getTitle(type)
+
+
+                    fillInforGenerate(type)
+
+                    adapter.submitData(data)
                 }
             }
         }
 
 
 
+
         (activity as? MainActivity)?.showBottomNav(false)
         mBinding.btnback.setOnClickListener {
-            val next = requireActivity().findViewById<ViewPager2>(R.id.viewPager)
             next.currentItem = next.currentItem - 1
         }
         mBinding.btncreate.setOnClickListener {
@@ -110,7 +115,7 @@ class CreateDetailFragment : BaseFragment<FragmentCreateDetailBinding>(){
                 viewModel.content = when (opt) {
 
 
-                    "Email" -> {
+                    QRType.EMAIL -> {
                         val email = input["email"].orEmpty()
                         val cc = input["cc"].orEmpty()
                         val subject = input["subject"].orEmpty()
@@ -123,21 +128,21 @@ class CreateDetailFragment : BaseFragment<FragmentCreateDetailBinding>(){
                     }
 
 
-                    "Url" -> {
+                    QRType.URL -> {
                         val url = input["url"].orEmpty()
                         if (url.isBlank()) throw Exception("URL cannot be empty")
                         url
                     }
 
 
-                    "Text" -> {
+                    QRType.TEXT  -> {
                         val text = input["text"].orEmpty()
                         if (text.isBlank()) throw Exception("Text is empty")
                         text
                     }
 
 
-                    "Phone" -> {
+                    QRType.PHONE -> {
                         val number = input["number"].orEmpty()
                         if (number.isBlank()) throw Exception("Phone number required")
 
@@ -145,7 +150,7 @@ class CreateDetailFragment : BaseFragment<FragmentCreateDetailBinding>(){
                     }
 
 
-                    "Sms" -> {
+                    QRType.SMS -> {
                         val phone = input["phone"].orEmpty()
                         val body = input["body"].orEmpty()
                         if (phone.isBlank()) throw Exception("Phone required")
@@ -153,8 +158,7 @@ class CreateDetailFragment : BaseFragment<FragmentCreateDetailBinding>(){
                         "SMSTO:$phone:$body"
                     }
 
-
-                    "Wifi" -> {
+                       QRType.WIFI -> {
                         val ssid = input["network"].orEmpty()
                         val pass = input["password"].orEmpty()
                         if (ssid.isBlank()) throw Exception("SSID is required")
@@ -163,7 +167,7 @@ class CreateDetailFragment : BaseFragment<FragmentCreateDetailBinding>(){
                     }
 
 
-                    "Contact" -> {
+                    QRType.CONTACT -> {
                         val name = input["name"].orEmpty()
                         val phone = input["phone"].orEmpty()
                         val address = input["address"].orEmpty()
@@ -185,7 +189,7 @@ class CreateDetailFragment : BaseFragment<FragmentCreateDetailBinding>(){
                     }
 
 
-                    "Location" -> {
+                    QRType.LOCATION  -> {
                         val lat = input["latitude"].orEmpty()
                         val lon = input["longitude"].orEmpty()
                         if (lat.isBlank() || lon.isBlank())
@@ -195,7 +199,7 @@ class CreateDetailFragment : BaseFragment<FragmentCreateDetailBinding>(){
                     }
 
 
-                    "Calendar" -> {
+                    QRType.EVENT -> {
                         val name = input["name"].orEmpty()
                         val start = input["start"].orEmpty()
                         val end = input["end"].orEmpty()
@@ -253,143 +257,237 @@ class CreateDetailFragment : BaseFragment<FragmentCreateDetailBinding>(){
         }
     private fun fillUI(qr: QRCodeEntity) {
 
-        mBinding.create.setText(qr.type.name)
-        Log.d("QR_TYPE", "qr.type.name = ${qr.type.name}")
-
-        viewModel.setCreateOption(qr.type.name.lowercase().replaceFirstChar { it.uppercase() })
-
-        Log.d("RecyclerV", "Data size: ${qr.type.name.lowercase().replaceFirstChar { it.uppercase() }}")
+        val type = qr.type
 
 
+        mBinding.create.text = getTitle(type)
 
+
+        viewModel.setCreateOption(type)
 
         val prefill = mutableMapOf<String, String>()
 
-        when (qr.type.name.lowercase().replaceFirstChar { it.uppercase() }) {
-
-            "Email" -> {
-                val email = qr.data["email"] as? String ?: ""
-                val cc = qr.data["cc"] as? String ?: ""
-                val subject = qr.data["subject"] as? String ?: ""
-                val body = qr.data["body"] as? String ?: ""
-
-                prefill["email"] = email
-                prefill["cc"] = cc
-                prefill["subject"] = subject
-                prefill["body"] = body
+        when (type) {
+            QRType.EMAIL -> {
+                prefill["email"] = qr.data["email"] as? String ?: ""
+                prefill["cc"] = qr.data["cc"] as? String ?: ""
+                prefill["subject"] = qr.data["subject"] as? String ?: ""
+                prefill["body"] = qr.data["body"] as? String ?: ""
             }
 
-            "Phone" -> {
-                val number = qr.data["number"] as? String
-                    ?: qr.content.removePrefix("tel:")
-                prefill["number"] = number
+            QRType.PHONE -> {
+                prefill["number"] =
+                    qr.data["number"] as? String ?: qr.content.removePrefix("tel:")
             }
 
-            "Url" -> {
+            QRType.URL -> {
                 prefill["url"] = qr.content
             }
 
-            "Text" -> {
+            QRType.TEXT -> {
                 prefill["text"] = qr.content
             }
 
-            "Sms" -> {
-                val phone = qr.data["phone"] as? String ?: ""
-                val body = qr.data["body"] as? String ?: ""
-
-                prefill["phone"] = phone
-                prefill["body"] = body
+            QRType.SMS -> {
+                prefill["phone"] = qr.data["phone"] as? String ?: ""
+                prefill["body"] = qr.data["body"] as? String ?: ""
             }
 
-            "Wifi" -> {
-                val ssid = qr.data["network"] as? String ?: ""
-                val pass = qr.data["password"] as? String ?: ""
-
-                prefill["network"] = ssid
-                prefill["password"] = pass
+            QRType.WIFI -> {
+                prefill["network"] = qr.data["network"] as? String ?: ""
+                prefill["password"] = qr.data["password"] as? String ?: ""
             }
 
-            "Contact" -> {
+            QRType.CONTACT -> {
                 prefill["name"] = qr.data["name"] as? String ?: ""
                 prefill["nickname"] = qr.data["nickname"] as? String ?: ""
                 prefill["phone"] = qr.data["phone"] as? String ?: ""
                 prefill["address"] = qr.data["address"] as? String ?: ""
             }
 
-            "Location" -> {
+            QRType.LOCATION -> {
                 val parts = qr.content.removePrefix("geo:").split(",")
                 prefill["latitude"] = parts.getOrNull(0) ?: ""
                 prefill["longitude"] = parts.getOrNull(1) ?: ""
             }
 
-            "Calendar" -> {
+            QRType.EVENT -> {
                 prefill["name"] = qr.data["name"] as? String ?: ""
                 prefill["start"] = qr.data["start"] as? String ?: ""
                 prefill["end"] = qr.data["end"] as? String ?: ""
                 prefill["location"] = qr.data["location"] as? String ?: ""
                 prefill["description"] = qr.data["description"] as? String ?: ""
             }
+
+            else -> {}
         }
 
-
-        fillInforGenerate(qr.type.name.lowercase().replaceFirstChar { it.uppercase() })
-
-
-
+        fillInforGenerate(type)
         adapter.submitData(data)
         adapter.prefillInput(prefill)
     }
 
-    fun fillInforGenerate(opt: String?) {
+
+    fun fillInforGenerate(opt: QRType) {
         data = when (opt) {
 
-            "Email" -> listOf(
-                mapOf("key" to "email", "title" to "Email:", "subtitle" to "example@123.com"),
-                mapOf("key" to "cc", "title" to "CC/BCC:", "subtitle" to "example@123.com"),
-                mapOf("key" to "subject", "title" to "Subject:", "subtitle" to "Example 123"),
-                mapOf("key" to "body", "title" to "Body:", "subtitle" to "Lorem ipsum dolor sit amet...")
+            QRType.EMAIL  -> listOf(
+                mapOf(
+                    "key" to "email",
+                    "title" to "Email:",
+                    "subtitle" to "example@123.com",
+                    "inputType" to (InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS)
+                ),
+                mapOf(
+                    "key" to "cc",
+                    "title" to "CC/BCC:",
+                    "subtitle" to "example@123.com",
+                    "inputType" to (InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS)
+                ),
+                mapOf(
+                    "key" to "subject",
+                    "title" to "Subject:",
+                    "subtitle" to "Example 123",
+                    "inputType" to (InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES)
+                ),
+                mapOf(
+                    "key" to "body",
+                    "title" to "Body:",
+                    "subtitle" to "Lorem ipsum dolor sit amet...",
+                    "inputType" to (InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES)
+                )
             )
 
-            "Phone" -> listOf(
-                mapOf("key" to "number", "title" to "Number:", "subtitle" to "012 8498 3849")
+            QRType.PHONE -> listOf(
+                mapOf(
+                    "key" to "number",
+                    "title" to "Number:",
+                    "subtitle" to "012 8498 3849",
+                    "inputType" to InputType.TYPE_CLASS_PHONE
+                )
             )
 
-            "Location" -> listOf(
-                mapOf("key" to "latitude", "title" to "Latitude:", "subtitle" to "20.12345"),
-                mapOf("key" to "longitude", "title" to "Longitude:", "subtitle" to "105.12345")
+            QRType.LOCATION -> listOf(
+                mapOf(
+                    "key" to "latitude",
+                    "title" to "Latitude:",
+                    "subtitle" to "20.12345",
+                    "inputType" to (InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL or InputType.TYPE_NUMBER_FLAG_SIGNED)
+                ),
+                mapOf(
+                    "key" to "longitude",
+                    "title" to "Longitude:",
+                    "subtitle" to "105.12345",
+                    "inputType" to (InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL or InputType.TYPE_NUMBER_FLAG_SIGNED)
+                )
             )
 
-            "Sms" -> listOf(
-                mapOf("key" to "phone", "title" to "Phone:", "subtitle" to "018 8294 8347"),
-                mapOf("key" to "body", "title" to "Body:", "subtitle" to "Message here")
+            QRType.SMS -> listOf(
+                mapOf(
+                    "key" to "phone",
+                    "title" to "Phone:",
+                    "subtitle" to "018 8294 8347",
+                    "inputType" to InputType.TYPE_CLASS_PHONE
+                ),
+                mapOf(
+                    "key" to "body",
+                    "title" to "Body:",
+                    "subtitle" to "Message here",
+                    "inputType" to (InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES)
+                )
             )
 
-            "Contact" -> listOf(
-                mapOf("key" to "name", "title" to "Name:", "subtitle" to "Nicken"),
-                mapOf("key" to "nickname", "title" to "Nickname:", "subtitle" to "Nick"),
-                mapOf("key" to "phone", "title" to "Phone:", "subtitle" to "012 8498 3849"),
-                mapOf("key" to "address", "title" to "Address:", "subtitle" to "ABC Street")
+            QRType.CONTACT -> listOf(
+                mapOf(
+                    "key" to "name",
+                    "title" to "Name:",
+                    "subtitle" to "Nicken",
+                    "inputType" to (InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_WORDS)
+                ),
+                mapOf(
+                    "key" to "nickname",
+                    "title" to "Nickname:",
+                    "subtitle" to "Nick",
+                    "inputType" to (InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_WORDS)
+                ),
+                mapOf(
+                    "key" to "phone",
+                    "title" to "Phone:",
+                    "subtitle" to "012 8498 3849",
+                    "inputType" to InputType.TYPE_CLASS_PHONE
+                ),
+                mapOf(
+                    "key" to "address",
+                    "title" to "Address:",
+                    "subtitle" to "ABC Street",
+                    "inputType" to (InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES)
+                )
             )
 
-            "Url" -> listOf(
-                mapOf("key" to "url", "title" to "Url:", "subtitle" to "http://example.com")
+            QRType.URL -> listOf(
+                mapOf(
+                    "key" to "url",
+                    "title" to "Url:",
+                    "subtitle" to "http://example.com",
+                    "inputType" to (InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_URI)
+                )
             )
 
-            "Wifi" -> listOf(
-                mapOf("key" to "network", "title" to "Network:", "subtitle" to "ABC123"),
-                mapOf("key" to "password", "title" to "Password:", "subtitle" to "12345678")
+            QRType.WIFI -> listOf(
+                mapOf(
+                    "key" to "network",
+                    "title" to "Network:",
+                    "subtitle" to "ABC123",
+                    "inputType" to (InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS)
+                ),
+                mapOf(
+                    "key" to "password",
+                    "title" to "Password:",
+                    "subtitle" to "12345678",
+                    "inputType" to (InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD)
+                )
             )
 
-            "Text" -> listOf(
-                mapOf("key" to "text", "title" to "Text:", "subtitle" to "Input text here")
+            QRType.TEXT -> listOf(
+                mapOf(
+                    "key" to "text",
+                    "title" to "Text:",
+                    "subtitle" to "Input text here",
+                    "inputType" to (InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES)
+                )
             )
 
-            "Calendar" -> listOf(
-                mapOf("key" to "name", "title" to "Name:", "subtitle" to "Event"),
-                mapOf("key" to "start", "title" to "Starting date:", "subtitle" to "09:00 dd/mm/yyyy"),
-                mapOf("key" to "end", "title" to "Ending date:", "subtitle" to "11:00 dd/mm/yyyy"),
-                mapOf("key" to "location", "title" to "Location:", "subtitle" to "City"),
-                mapOf("key" to "description", "title" to "Description:", "subtitle" to "Details...")
+            QRType.EVENT -> listOf(
+                mapOf(
+                    "key" to "name",
+                    "title" to "Name:",
+                    "subtitle" to "Event",
+                    "inputType" to (InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_WORDS)
+                ),
+                mapOf(
+                    "key" to "start",
+                    "title" to "Starting date:",
+                    "subtitle" to "09:00 dd/mm/yyyy",
+                    "inputType" to (InputType.TYPE_CLASS_DATETIME or InputType.TYPE_DATETIME_VARIATION_NORMAL)
+                ),
+                mapOf(
+                    "key" to "end",
+                    "title" to "Ending date:",
+                    "subtitle" to "11:00 dd/mm/yyyy",
+                    "inputType" to (InputType.TYPE_CLASS_DATETIME or InputType.TYPE_DATETIME_VARIATION_NORMAL)
+                ),
+                mapOf(
+                    "key" to "location",
+                    "title" to "Location:",
+                    "subtitle" to "City",
+                    "inputType" to (InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_WORDS)
+                ),
+                mapOf(
+                    "key" to "description",
+                    "title" to "Description:",
+                    "subtitle" to "Details...",
+                    "inputType" to (InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES)
+                )
             )
 
             else -> emptyList()
@@ -408,6 +506,21 @@ class CreateDetailFragment : BaseFragment<FragmentCreateDetailBinding>(){
         return if (query.isBlank()) "mailto:$email"
         else "mailto:$email?$query"
     }
+    private fun getTitle(type: QRType): String {
+        return when (type) {
+            QRType.EMAIL    -> getString(R.string.email)
+            QRType.PHONE    -> getString(R.string.phone)
+            QRType.TEXT     -> getString(R.string.text)
+            QRType.SMS      -> getString(R.string.sms)
+            QRType.URL      -> getString(R.string.url)
+            QRType.WIFI     -> getString(R.string.wifi)
+            QRType.CONTACT  -> getString(R.string.contact)
+            QRType.LOCATION -> getString(R.string.location)
+            QRType.EVENT    -> getString(R.string.calendar)
+            else -> "No"
+        }
+    }
+
 
 
 

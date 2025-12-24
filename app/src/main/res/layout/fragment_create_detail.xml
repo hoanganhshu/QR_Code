@@ -27,9 +27,10 @@
             android:text="@string/create"
             android:textStyle="bold"
             android:id="@+id/create"
+            android:fontFamily="@font/poppin_family"
             android:background="@color/base"
             android:textColor="@color/white"
-            android:textSize="@dimen/_18sdp"
+            android:textSize="18sp"
             android:paddingTop="29dp"
 
             android:gravity="center_horizontal"
@@ -68,7 +69,7 @@
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:textStyle="bold"
-                android:textSize="@dimen/_13sdp"
+                android:textSize="13sp"
 
                 android:id="@+id/free"
                 />
@@ -81,7 +82,7 @@
                 android:gravity="center"
                 android:textStyle="bold"
 
-                android:textSize="@dimen/_13sdp"
+                android:textSize="13sp"
                 android:id="@+id/wpa"
                 />
 
@@ -93,7 +94,7 @@
                 android:layout_weight="1"
                 android:text="@string/wep"
                 android:textStyle="bold"
-                android:textSize="@dimen/_13sdp"
+                android:textSize="13sp"
                 android:id="@+id/wep"
                 />
             </LinearLayout>
@@ -104,18 +105,28 @@
 
         </com.google.android.material.card.MaterialCardView>
 
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintTop_toBottomOf="@+id/optionwifi"
+        app:layout_constraintBottom_toTopOf="@id/cardcreate"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
         <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:id="@+id/recyclerview"
             android:layout_marginTop="@dimen/_28sdp"
             android:layout_marginHorizontal="@dimen/_24sdp"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@+id/optionwifi"
-
+            android:nestedScrollingEnabled="false"
             />
+    </androidx.core.widget.NestedScrollView>
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="72dp"
+        android:id="@+id/cardcreate"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
 
@@ -130,7 +141,8 @@
             android:text="@string/createa"
             android:gravity="center"
             android:id="@+id/btncreate"
-            android:textSize="@dimen/_18sdp"
+            android:fontFamily="@font/poppin_family"
+            android:textSize="18sp"
             android:textStyle="bold"
             android:textColor="@color/base"
             />

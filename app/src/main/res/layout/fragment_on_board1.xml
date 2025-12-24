@@ -27,6 +27,7 @@
           android:textStyle="bold"
           app:layout_constraintStart_toStartOf="@id/imageView2"
           android:layout_marginTop="67dp"
+          android:fontFamily="@font/poppin_family"
 
           android:textSize="18dp"
           android:id="@+id/title"
@@ -42,6 +43,7 @@
           android:text="@string/onboard1subtitle"
           android:textAlignment="center"
           android:textColor="@color/subtitle"
+          android:fontFamily="@font/poppin_family"
           android:textSize="14dp"
           app:layout_constraintStart_toStartOf="@id/imageView2"
           app:layout_constraintTop_toBottomOf="@+id/title" />
@@ -64,6 +66,7 @@
           android:layout_marginStart="24dp"
           android:text="@string/skip"
           app:layout_constraintBottom_toBottomOf="@+id/imageView3"
+          android:fontFamily="@font/poppin_family"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toTopOf="@+id/imageView3" />
 
@@ -71,6 +74,7 @@
           android:id="@+id/next"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
+          android:fontFamily="@font/poppin_family"
 
           android:layout_marginEnd="24dp"
           android:text="@string/next"
