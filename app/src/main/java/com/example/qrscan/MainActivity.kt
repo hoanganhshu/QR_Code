@@ -64,12 +64,19 @@ class MainActivity : AppCompatActivity(), BottomNavController {
             true
         }
 
+    }
 
+    override fun onResume() {
+        super.onResume()
 
+        if (isOnboardingVisible()) {
+            bottomNav.visibility = View.GONE
+        }
     }
     fun goToMainFlow() {
 
         viewPager.visibility = View.GONE
+        bottomNav.visibility = View.VISIBLE
 
 
         findViewById<View>(R.id.mainContainer).visibility = View.VISIBLE
@@ -82,8 +89,6 @@ class MainActivity : AppCompatActivity(), BottomNavController {
             .commit()
     }
 
-
-
     fun showBottomNav(show: Boolean) {
         bottomNav.visibility = if (show) View.VISIBLE else View.GONE
     }
@@ -92,10 +97,18 @@ class MainActivity : AppCompatActivity(), BottomNavController {
         showBottomNav(show)
     }
     fun navigateMain(fragment: Fragment) {
+        if (isOnboardingVisible()) {
+
+            return
+        }
+
         supportFragmentManager.beginTransaction()
             .replace(R.id.mainContainer, fragment)
             .addToBackStack(null)
             .commit()
+    }
+    private fun isOnboardingVisible(): Boolean {
+        return findViewById<View>(R.id.viewPager).visibility == View.VISIBLE
     }
 
 }

@@ -121,12 +121,10 @@ class ResultFragment : BaseFragment<FragmentResultBinding>(){
             val next = requireActivity().findViewById<ViewPager2>(R.id.viewPager)
             (activity as? MainActivity)?.navigateMain(CreateDetailFragment())
 
-
         }
         mBinding.save.setOnClickListener {
 
             val qrType = viewModel.createOption.value ?: return@setOnClickListener
-
 
             viewModel.userInput = emptyMap()
 

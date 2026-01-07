@@ -252,7 +252,6 @@ class ScanFragment : BaseFragment<FragmentScanBinding>(){
 
             analyzer?.setAnalyzer(ContextCompat.getMainExecutor(requireContext())) { imageProxy ->
 
-
                 if (!autoScanEnabled || isHandled) {
                     imageProxy.close()
                     return@setAnalyzer
@@ -293,8 +292,6 @@ class ScanFragment : BaseFragment<FragmentScanBinding>(){
                         imageProxy.close()
                     }
             }
-
-
 
                 camera = cameraProvider?.bindToLifecycle(
                     this@ScanFragment,

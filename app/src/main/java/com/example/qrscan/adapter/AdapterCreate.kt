@@ -21,8 +21,6 @@ class AdapterCreate : BaseAdapter<Map<String, Any?>>() {
     private var recyclerView: RecyclerView? = null
 
     private val textWatchers =mutableMapOf<String , TextWatcher>()
-
-
     private var isPrefilling = false
     private var lastFocusedEditText: View? = null
 
@@ -30,7 +28,6 @@ class AdapterCreate : BaseAdapter<Map<String, Any?>>() {
 
     override fun setData(binding: ViewDataBinding, item: Map<String, Any?>, position: Int) {
         val mBinding = binding as ItemCreateBinding
-
 
         val key = item["key"]?.toString() ?: return
         val title = item["title"]?.toString() ?: ""

@@ -17,11 +17,10 @@
             android:id="@+id/cardprevious"
             android:layout_width="@dimen/_105sdp"
             android:layout_height="@dimen/_126sdp"
-            app:cardElevation="4dp"
-            android:layout_margin="2dp"
+            app:cardElevation="8dp"
+            android:layout_margin="4dp"
             app:cardCornerRadius="@dimen/_15sdp"
-            app:strokeColor="@android:color/transparent"
-            app:strokeWidth="0dp"
+
 
             >
 
@@ -111,7 +110,8 @@
             android:id="@+id/cardnext"
             android:paddingRight="15dp"
             android:paddingTop="10dp"
-            android:elevation="20dp"
+            android:layout_margin="4dp"
+            app:cardElevation="8dp"
             app:strokeColor="@android:color/transparent"
             app:strokeWidth="1dp"
             app:cardCornerRadius="@dimen/_15sdp"
