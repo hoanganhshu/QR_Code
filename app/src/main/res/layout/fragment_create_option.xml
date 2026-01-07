@@ -74,13 +74,12 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"
-
                 android:gravity="center"
                 android:layout_columnWeight="1">
 
                 <com.google.android.material.card.MaterialCardView
-                    android:layout_width="85dp"
-                    android:layout_height="111dp"
+                    android:layout_width="@dimen/_68sdp"
+                    android:layout_height="@dimen/_91sdp"
                     app:strokeWidth="2dp"
                     android:padding="5dp"
                     android:id="@+id/phone"
@@ -93,7 +92,7 @@
                         android:padding="@dimen/_5sdp"
                         android:layout_gravity="center_horizontal"
                         android:layout_marginTop="@dimen/_19sdp"
-                        android:src="@drawable/icon_phone" />
+                        android:src="@drawable/icon_phonevector" />
 
                     <View
                         android:layout_width="70dp"
@@ -123,8 +122,8 @@
                 android:layout_columnWeight="1">
 
                 <com.google.android.material.card.MaterialCardView
-                    android:layout_width="85dp"
-                    android:layout_height="111dp"
+                    android:layout_width="@dimen/_68sdp"
+                    android:layout_height="@dimen/_91sdp"
                     android:id="@+id/email"
                     app:strokeWidth="2dp"
                     android:padding="5dp"
@@ -137,7 +136,7 @@
                         android:padding="@dimen/_5sdp"
                         android:layout_gravity="center_horizontal"
                         android:layout_marginTop="@dimen/_19sdp"
-                        android:src="@drawable/email" />
+                        android:src="@drawable/emailvector" />
 
                     <View
                         android:layout_width="70dp"
@@ -165,8 +164,8 @@
                 android:layout_columnWeight="1">
 
                 <com.google.android.material.card.MaterialCardView
-                    android:layout_width="85dp"
-                    android:layout_height="111dp"
+                    android:layout_width="@dimen/_68sdp"
+                    android:layout_height="@dimen/_91sdp"
                     app:strokeWidth="2dp"
                     android:padding="5dp"
                     android:id="@+id/url"
@@ -179,7 +178,7 @@
                         android:padding="@dimen/_5sdp"
                         android:layout_gravity="center_horizontal"
                         android:layout_marginTop="@dimen/_19sdp"
-                        android:src="@drawable/url" />
+                        android:src="@drawable/urlvector" />
 
                     <View
                         android:layout_width="70dp"
@@ -207,8 +206,8 @@
                 android:layout_columnWeight="1">
 
                 <com.google.android.material.card.MaterialCardView
-                    android:layout_width="85dp"
-                    android:layout_height="111dp"
+                    android:layout_width="@dimen/_68sdp"
+                    android:layout_height="@dimen/_91sdp"
                     android:id="@+id/sms"
                     app:strokeWidth="2dp"
                     android:padding="5dp"
@@ -221,7 +220,7 @@
                         android:layout_gravity="center_horizontal"
                         android:padding="@dimen/_5sdp"
                         android:layout_marginTop="@dimen/_19sdp"
-                        android:src="@drawable/sms" />
+                        android:src="@drawable/smsvector" />
 
                     <View
                         android:layout_width="70dp"
@@ -249,10 +248,10 @@
                 android:layout_columnWeight="1">
 
                 <com.google.android.material.card.MaterialCardView
-                    android:layout_width="85dp"
+                    android:layout_width="@dimen/_68sdp"
                     app:strokeWidth="2dp"
                     android:padding="5dp"
-                    android:layout_height="111dp"
+                    android:layout_height="@dimen/_91sdp"
                     android:id="@+id/contact"
                     app:strokeColor="#CDD0E3"
                     app:cardCornerRadius="@dimen/_12sdp">
@@ -263,7 +262,7 @@
                         android:layout_gravity="center_horizontal"
                         android:padding="@dimen/_5sdp"
                         android:layout_marginTop="@dimen/_19sdp"
-                        android:src="@drawable/contacts" />
+                        android:src="@drawable/contactsvector" />
 
                     <View
                         android:layout_width="70dp"
@@ -292,8 +291,8 @@
                 android:layout_columnWeight="1">
 
                 <com.google.android.material.card.MaterialCardView
-                    android:layout_width="85dp"
-                    android:layout_height="111dp"
+                    android:layout_width="@dimen/_68sdp"
+                    android:layout_height="@dimen/_91sdp"
                     app:strokeWidth="2dp"
                     android:padding="5dp"
                     android:id="@+id/text"
@@ -307,7 +306,7 @@
                         android:padding="@dimen/_5sdp"
                         android:layout_gravity="center_horizontal"
                         android:layout_marginTop="@dimen/_19sdp"
-                        android:src="@drawable/text" />
+                        android:src="@drawable/textvector" />
 
                     <View
                         android:layout_width="70dp"
@@ -334,8 +333,8 @@
                 android:layout_columnWeight="1">
 
                 <com.google.android.material.card.MaterialCardView
-                    android:layout_width="85dp"
-                    android:layout_height="111dp"
+                    android:layout_width="@dimen/_68sdp"
+                    android:layout_height="@dimen/_91sdp"
                     app:strokeWidth="2dp"
                     android:padding="5dp"
                     app:strokeColor="#CDD0E3"
@@ -348,7 +347,7 @@
                         android:layout_gravity="center_horizontal"
                         android:padding="@dimen/_5sdp"
                         android:layout_marginTop="@dimen/_19sdp"
-                        android:src="@drawable/wifi" />
+                        android:src="@drawable/wifivector" />
 
                     <View
                         android:layout_width="70dp"
@@ -375,8 +374,8 @@
                 android:layout_columnWeight="1">
 
                 <com.google.android.material.card.MaterialCardView
-                    android:layout_width="85dp"
-                    android:layout_height="111dp"
+                    android:layout_width="@dimen/_68sdp"
+                    android:layout_height="@dimen/_91sdp"
                     app:strokeWidth="2dp"
                     android:padding="5dp"
                     android:id="@+id/calendar"
@@ -389,7 +388,7 @@
                         android:layout_gravity="center_horizontal"
                         android:padding="@dimen/_5sdp"
                         android:layout_marginTop="@dimen/_19sdp"
-                        android:src="@drawable/calendar" />
+                        android:src="@drawable/calendarvector" />
 
                     <View
                         android:layout_width="70dp"
@@ -417,8 +416,8 @@
                 android:layout_columnWeight="1">
 
                 <com.google.android.material.card.MaterialCardView
-                    android:layout_width="85dp"
-                    android:layout_height="111dp"
+                    android:layout_width="@dimen/_68sdp"
+                    android:layout_height="@dimen/_91sdp"
                     app:strokeWidth="2dp"
                     android:padding="5dp"
                     android:id="@+id/location"
@@ -431,7 +430,7 @@
                         android:layout_gravity="center_horizontal"
                         android:padding="@dimen/_5sdp"
                         android:layout_marginTop="@dimen/_19sdp"
-                        android:src="@drawable/location" />
+                        android:src="@drawable/locationvector" />
 
                     <View
                         android:layout_width="70dp"

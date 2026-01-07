@@ -1,0 +1,50 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="20dp"
+    android:height="20dp"
+    android:viewportWidth="20"
+    android:viewportHeight="20">
+    <group>
+        <path
+            android:strokeColor="#FF3C52F5"
+            android:strokeWidth="1"
+            android:strokeLineCap="round"
+            android:strokeLineJoin="round"
+            android:pathData="M12.64 17.5H5v0c-1.38 0-2.5-1.12-2.5-2.5v0V5v0c0-1.38 1.12-2.5 2.5-2.5h10v0c1.38 0 2.5 1.12 2.5 2.5v6.79"/>
+        <path
+            android:strokeColor="#FF3C52F5"
+            android:strokeWidth="1"
+            android:strokeLineCap="round"
+            android:strokeLineJoin="round"
+            android:pathData="M17.65 11.93v0c1.47 1.47 1.47 3.84 0 5.3-1.46 1.47-3.84 1.47-5.3 0-1.47-1.46-1.47-3.83 0-5.3v0c1.46-1.46 3.84-1.46 5.3 0 0 0 0 0 0 0"/>
+        <path
+            android:strokeColor="#FF3C52F5"
+            android:strokeWidth="1"
+            android:strokeLineCap="round"
+            android:strokeLineJoin="round"
+            android:pathData="M14.91 13.32v1.46l1.15 0.7"/>
+        <path
+            android:strokeColor="#FF3C52F5"
+            android:strokeWidth="1"
+            android:strokeLineCap="round"
+            android:strokeLineJoin="round"
+            android:pathData="M5.63 14.58H7.5"/>
+        <path
+            android:strokeColor="#FF3C52F5"
+            android:strokeWidth="1"
+            android:strokeLineCap="round"
+            android:strokeLineJoin="round"
+            android:pathData="M5.63 12.08h2.7"/>
+        <path
+            android:strokeColor="#FF3C52F5"
+            android:strokeWidth="1"
+            android:strokeLineCap="round"
+            android:strokeLineJoin="round"
+            android:pathData="M5.63 9.58H10"/>
+        <path
+            android:strokeColor="#FF3C52F5"
+            android:strokeWidth="1"
+            android:strokeLineCap="round"
+            android:strokeLineJoin="round"
+            android:pathData="M17.5 6.67h-15"/>
+    </group>
+</vector>

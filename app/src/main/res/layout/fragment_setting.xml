@@ -10,79 +10,75 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingBottom="100dp">
-            
+
             <TextView
-                android:layout_width="match_parent"
-                android:text="@string/setting"
-                android:textStyle="bold"
-                android:fontFamily="@font/poppin_family"
                 android:id="@+id/setting"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingVertical="15dp"
                 android:background="@color/base"
+                android:fontFamily="@font/poppin_family"
+                android:gravity="center"
+                android:text="@string/setting"
                 android:textColor="@color/white"
                 android:textSize="@dimen/_18sdp"
-                android:paddingTop="@dimen/_10sdp"
-                android:gravity="center"
-                android:layout_height="78dp"
-                app:layout_constraintTop_toTopOf="parent"
-
-                app:layout_constraintStart_toStartOf="parent"
-                />
-            <ImageView
-                android:layout_width="@dimen/_300sdp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/setting"
+                android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginTop="@dimen/_23sdp"
-                android:paddingHorizontal="@dimen/_20sdp"
-                android:id="@+id/go_premium"
-                android:src="@drawable/premium"
-                android:layout_height="@dimen/_132sdp"/>
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
 
 
             <TextView
-                android:layout_width="match_parent"
-                android:textSize="@dimen/_16sdp"
-                android:layout_marginTop="@dimen/_40sdp"
-                android:fontFamily="@font/poppin_family"
-                android:textColor="@color/base"
-                android:textStyle="bold"
-                android:layout_marginStart="@dimen/_15sdp"
                 android:id="@+id/generalsetting"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@+id/go_premium"
+                android:layout_marginHorizontal="@dimen/_15sdp"
+                android:layout_marginTop="28dp"
+                android:fontFamily="@font/poppin_family"
                 android:text="@string/generalsetting"
-                app:layout_constraintStart_toStartOf="@id/go_premium"
+                android:textColor="@color/base"
+                android:textSize="@dimen/_16sdp"
+                android:textStyle="bold"
+                android:layout_marginStart="@dimen/_18sdp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+
+                app:layout_constraintTop_toBottomOf="@+id/setting"
 
                 />
+
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_50sdp"
+                android:layout_height="wrap_content"
+                android:paddingBottom="15dp"
                 android:layout_marginTop="20dp"
                 android:id="@+id/vibratelinear"
-                android:layout_marginStart="@dimen/_15sdp"
-                android:layout_marginEnd="@dimen/_22sdp"
+                android:layout_marginStart="@dimen/_18sdp"
+                android:layout_marginEnd="@dimen/_18sdp"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/generalsetting"
                 android:orientation="horizontal"
                 
                 >
                 <ImageView
-                    android:layout_width="@dimen/_20sdp"
-                    android:layout_height="@dimen/_20sdp"
-                    android:src="@drawable/vibrate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/vibratevector"
 
                     />
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_weight="1"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="@dimen/_10sdp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_18sdp"
                     android:orientation="vertical"
 
                     >
                     <TextView
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/_25sdp"
+                        android:layout_height="wrap_content"
                         android:id="@+id/title1"
                         android:textStyle="bold"
                         android:textSize="@dimen/_13sdp"
@@ -92,11 +88,12 @@
                         />
                     <TextView
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
+                        android:maxLines="1"
                         android:fontFamily="@font/poppin_family"
                         android:text="@string/subtitle_vibrate"
                         android:textColor="@color/hint"
-                        android:textSize="@dimen/_12sdp"
+                        android:textSize="@dimen/_11sdp"
                         />
 
 
@@ -106,66 +103,55 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/switchvibrate"
-
                     android:layout_gravity="end"
-
                     android:thumb="@drawable/thumb_custom"
-
-
-
                    app:track="@drawable/track_custom"
-
-
-
-
-
                     />
                 
             </LinearLayout>
             <View
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_1sdp"
+                android:layout_height="1dp"
                 android:background="@color/view"
-                android:layout_marginStart="@dimen/_10sdp"
-                android:layout_marginEnd="@dimen/_22sdp"
-
+                android:layout_marginStart="@dimen/_18sdp"
+                android:layout_marginEnd="@dimen/_18sdp"
                 app:layout_constraintTop_toBottomOf="@+id/vibratelinear"
 
                 />
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_50sdp"
+                android:layout_height="wrap_content"
+                android:paddingBottom="15dp"
                 android:layout_marginTop="@dimen/_15sdp"
-
-
                 android:id="@+id/beeplinear"
-                android:layout_marginStart="@dimen/_10sdp"
-                android:layout_marginEnd="@dimen/_22sdp"
+                android:layout_marginStart="@dimen/_18sdp"
+                android:layout_marginEnd="@dimen/_18sdp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/vibratelinear"
                 android:orientation="horizontal"
 
                 >
                 <ImageView
-                    android:layout_width="@dimen/_20sdp"
-                    android:layout_height="@dimen/_20sdp"
-                    android:src="@drawable/beep"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/beepvector"
 
                     />
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_weight="1"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="@dimen/_10sdp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_18sdp"
                     android:orientation="vertical"
 
                     >
                     <TextView
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/_25sdp"
+                        android:layout_height="wrap_content"
                         android:id="@+id/title2"
                         android:textStyle="bold"
+                        android:maxLines="1"
                         android:fontFamily="@font/poppin_family"
                         android:textSize="@dimen/_13sdp"
                         android:text="@string/beep"
@@ -174,10 +160,10 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:fontFamily="@font/poppin_family"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:text="@string/subtitle_beep"
                         android:textColor="@color/hint"
-                        android:textSize="@dimen/_12sdp"
+                        android:textSize="@dimen/_11sdp"
                         />
 
 
@@ -204,8 +190,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_1sdp"
                 android:background="@color/view"
-                android:layout_marginStart="@dimen/_10sdp"
-                android:layout_marginEnd="@dimen/_22sdp"
+                android:layout_marginStart="@dimen/_18sdp"
+                android:layout_marginEnd="@dimen/_18sdp"
 
                 app:layout_constraintTop_toBottomOf="@+id/beeplinear"
 
@@ -213,34 +199,35 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_50sdp"
+                android:layout_height="wrap_content"
+                android:paddingBottom="15dp"
 
                 android:id="@+id/historylinear"
                 android:layout_marginTop="@dimen/_15sdp"
-                android:layout_marginStart="@dimen/_10sdp"
-                android:layout_marginEnd="@dimen/_22sdp"
+                android:layout_marginStart="@dimen/_18sdp"
+                android:layout_marginEnd="@dimen/_18sdp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/beeplinear"
                 android:orientation="horizontal"
 
                 >
                 <ImageView
-                    android:layout_width="@dimen/_20sdp"
-                    android:layout_height="@dimen/_20sdp"
-                    android:src="@drawable/history"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/historyvector"
 
                     />
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="match_parent"
-                    android:layout_marginStart="@dimen/_10sdp"
+                    android:layout_marginStart="@dimen/_18sdp"
                     android:orientation="vertical"
 
                     >
                     <TextView
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/_25sdp"
+                        android:layout_height="wrap_content"
                         android:id="@+id/title3"
                         android:fontFamily="@font/poppin_family"
                         android:textStyle="bold"
@@ -251,10 +238,10 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:fontFamily="@font/poppin_family"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:text="@string/subtitle_history"
                         android:textColor="@color/hint"
-                        android:textSize="@dimen/_12sdp"
+                        android:textSize="@dimen/_11sdp"
                         />
 
 
@@ -281,8 +268,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_1sdp"
                 android:background="@color/view"
-                android:layout_marginStart="@dimen/_10sdp"
-                android:layout_marginEnd="@dimen/_22sdp"
+                android:layout_marginStart="@dimen/_18sdp"
+                android:layout_marginEnd="@dimen/_18sdp"
 
                 app:layout_constraintTop_toBottomOf="@+id/historylinear"
 
@@ -290,34 +277,35 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_50sdp"
+                android:layout_height="wrap_content"
+                android:paddingBottom="15dp"
                 android:layout_marginTop="@dimen/_15sdp"
 
                 android:id="@+id/scanlinear"
-                android:layout_marginStart="@dimen/_10sdp"
-                android:layout_marginEnd="@dimen/_22sdp"
+                android:layout_marginStart="@dimen/_18sdp"
+                android:layout_marginEnd="@dimen/_18sdp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/historylinear"
                 android:orientation="horizontal"
 
                 >
                 <ImageView
-                    android:layout_width="@dimen/_20sdp"
-                    android:layout_height="@dimen/_20sdp"
-                    android:src="@drawable/scan"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/scanvector"
 
                     />
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_weight="1"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="@dimen/_10sdp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_18sdp"
                     android:orientation="vertical"
 
                     >
                     <TextView
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/_25sdp"
+                        android:layout_height="wrap_content"
                         android:id="@+id/title4"
                         android:fontFamily="@font/poppin_family"
                         android:textStyle="bold"
@@ -328,10 +316,10 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:fontFamily="@font/poppin_family"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:text="@string/subtitle_scan"
                         android:textColor="@color/hint"
-                        android:textSize="@dimen/_12sdp"
+                        android:textSize="@dimen/_11sdp"
                         />
 
 
@@ -344,14 +332,7 @@
                     android:layout_gravity="end"
                     android:thumb="@drawable/thumb_custom"
                     android:checked="true"
-
-
-
                     app:track="@drawable/track_custom"
-
-
-
-
 
                     />
 
@@ -360,8 +341,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_1sdp"
                 android:background="@color/view"
-                android:layout_marginStart="@dimen/_10sdp"
-                android:layout_marginEnd="@dimen/_22sdp"
+                android:layout_marginStart="@dimen/_18sdp"
+                android:layout_marginEnd="@dimen/_18sdp"
 
                 app:layout_constraintTop_toBottomOf="@+id/scanlinear"
 
@@ -369,34 +350,36 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_50sdp"
+                android:layout_height="wrap_content"
+                android:paddingBottom="15dp"
 
                 android:id="@+id/languagelinear"
                 android:layout_marginTop="@dimen/_15sdp"
-                android:layout_marginStart="@dimen/_10sdp"
-                android:layout_marginEnd="@dimen/_22sdp"
+                android:layout_marginStart="@dimen/_18sdp"
+                android:layout_marginEnd="@dimen/_18sdp"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/scanlinear"
                 android:orientation="horizontal"
 
                 >
                 <ImageView
-                    android:layout_width="@dimen/_20sdp"
-                    android:layout_height="@dimen/_20sdp"
-                    android:src="@drawable/language"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/languagevector"
 
                     />
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="match_parent"
-                    android:layout_marginStart="@dimen/_10sdp"
+                    android:layout_marginStart="@dimen/_18sdp"
                     android:orientation="vertical"
 
                     >
                     <TextView
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/_25sdp"
+                        android:layout_height="wrap_content"
                         android:id="@+id/title5"
                         android:fontFamily="@font/poppin_family"
                         android:textStyle="bold"
@@ -407,7 +390,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:fontFamily="@font/poppin_family"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         
                         android:textColor="@color/hint"
                         android:textSize="@dimen/_12sdp"
@@ -431,17 +414,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_1sdp"
                 android:background="@color/view"
-                android:layout_marginStart="@dimen/_10sdp"
-                android:layout_marginEnd="@dimen/_22sdp"
+                android:layout_marginStart="@dimen/_18sdp"
+                android:layout_marginEnd="@dimen/_18sdp"
 
-                app:layout_constraintTop_toBottomOf="@+id/beeplinear"
+                app:layout_constraintTop_toBottomOf="@+id/languagelinear"
 
                 />
 
             <TextView
                 android:layout_width="match_parent"
                 android:textSize="@dimen/_16sdp"
-                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_marginTop="@dimen/_18sdp"
                 android:textColor="@color/base"
                 android:textStyle="bold"
                 android:fontFamily="@font/poppin_family"
@@ -450,34 +433,35 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toBottomOf="@+id/languagelinear"
                 android:text="@string/support"
-                app:layout_constraintStart_toStartOf="@id/go_premium"
+                app:layout_constraintStart_toStartOf="parent"
 
                 />
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_36sdp"
+                android:layout_height="wrap_content"
+                android:paddingBottom="15dp"
                 android:layout_marginTop="20dp"
                 android:id="@+id/sharelinear"
-                android:layout_marginStart="@dimen/_10sdp"
-                android:layout_marginEnd="@dimen/_22sdp"
+                android:layout_marginStart="@dimen/_18sdp"
+                android:layout_marginEnd="@dimen/_18sdp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/support"
                 android:orientation="horizontal"
 
                 >
                 <ImageView
-                    android:layout_width="@dimen/_20sdp"
-                    android:layout_height="@dimen/_20sdp"
-                    android:src="@drawable/share_setting"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/share_settingvector"
 
                     />
 
                     <TextView
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/_25sdp"
+                        android:layout_height="wrap_content"
                         android:fontFamily="@font/poppin_family"
                         android:id="@+id/title6"
-                        android:layout_marginStart="@dimen/_10sdp"
+                        android:layout_marginStart="@dimen/_18sdp"
                         android:textStyle="bold"
                         android:textSize="@dimen/_13sdp"
                         android:text="@string/share_with_friend"
@@ -491,8 +475,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_1sdp"
                 android:background="@color/view"
-                android:layout_marginStart="@dimen/_10sdp"
-                android:layout_marginEnd="@dimen/_22sdp"
+                android:layout_marginStart="@dimen/_18sdp"
+                android:layout_marginEnd="@dimen/_18sdp"
 
                 app:layout_constraintTop_toBottomOf="@+id/sharelinear"
 
@@ -500,29 +484,30 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_36sdp"
+                android:layout_height="wrap_content"
+                android:paddingBottom="15dp"
                 android:layout_marginTop="20dp"
                 android:id="@+id/ratelinear"
-                android:layout_marginStart="@dimen/_10sdp"
-                android:layout_marginEnd="@dimen/_22sdp"
+                android:layout_marginStart="@dimen/_18sdp"
+                android:layout_marginEnd="@dimen/_18sdp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/sharelinear"
                 android:orientation="horizontal"
 
                 >
                 <ImageView
-                    android:layout_width="@dimen/_20sdp"
-                    android:layout_height="@dimen/_20sdp"
-                    android:src="@drawable/rate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ratevector"
 
                     />
 
                 <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/_25sdp"
+                    android:layout_height="wrap_content"
                     android:fontFamily="@font/poppin_family"
                     android:id="@+id/title7"
-                    android:layout_marginStart="@dimen/_10sdp"
+                    android:layout_marginStart="@dimen/_18sdp"
                     android:textStyle="bold"
                     android:textSize="@dimen/_13sdp"
                     android:text="@string/rate_app"
@@ -536,8 +521,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_1sdp"
                 android:background="@color/view"
-                android:layout_marginStart="@dimen/_10sdp"
-                android:layout_marginEnd="@dimen/_22sdp"
+                android:layout_marginStart="@dimen/_18sdp"
+                android:layout_marginEnd="@dimen/_18sdp"
 
                 app:layout_constraintTop_toBottomOf="@+id/ratelinear"
 
@@ -547,28 +532,29 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_36sdp"
+                android:layout_height="wrap_content"
+                android:paddingBottom="15dp"
                 android:layout_marginTop="20dp"
                 android:id="@+id/feedbacklinear"
-                android:layout_marginStart="@dimen/_10sdp"
-                android:layout_marginEnd="@dimen/_22sdp"
+                android:layout_marginStart="@dimen/_18sdp"
+                android:layout_marginEnd="@dimen/_18sdp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/ratelinear"
                 android:orientation="horizontal"
 
                 >
                 <ImageView
-                    android:layout_width="@dimen/_20sdp"
-                    android:layout_height="@dimen/_20sdp"
-                    android:src="@drawable/feedback"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/feedbackvector"
 
                     />
 
                 <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/_25sdp"
+                    android:layout_height="wrap_content"
                     android:id="@+id/title8"
-                    android:layout_marginStart="@dimen/_10sdp"
+                    android:layout_marginStart="@dimen/_18sdp"
                     android:textStyle="bold"
                     android:textSize="@dimen/_13sdp"
                     android:fontFamily="@font/poppin_family"
@@ -583,8 +569,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_1sdp"
                 android:background="@color/view"
-                android:layout_marginStart="@dimen/_10sdp"
-                android:layout_marginEnd="@dimen/_22sdp"
+                android:layout_marginStart="@dimen/_18sdp"
+                android:layout_marginEnd="@dimen/_18sdp"
 
                 app:layout_constraintTop_toBottomOf="@+id/feedbacklinear"
 
@@ -593,11 +579,12 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_36sdp"
+                android:layout_height="wrap_content"
+                android:paddingBottom="15dp"
                 android:layout_marginTop="20dp"
                 android:id="@+id/privatelinear"
-                android:layout_marginStart="@dimen/_10sdp"
-                android:layout_marginEnd="@dimen/_22sdp"
+                android:layout_marginStart="@dimen/_18sdp"
+                android:layout_marginEnd="@dimen/_18sdp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/feedbacklinear"
                 android:orientation="horizontal"
@@ -605,18 +592,18 @@
 
                 >
                 <ImageView
-                    android:layout_width="@dimen/_20sdp"
-                    android:layout_height="@dimen/_20sdp"
-                    android:src="@drawable/privacy"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/privacyvector"
 
                     />
 
                 <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/_25sdp"
+                    android:layout_height="wrap_content"
                     android:id="@+id/title9"
                     android:fontFamily="@font/poppin_family"
-                    android:layout_marginStart="@dimen/_10sdp"
+                    android:layout_marginStart="@dimen/_18sdp"
                     android:textStyle="bold"
                     android:textSize="@dimen/_13sdp"
                     android:text="@string/privacy"
@@ -624,20 +611,7 @@
                     />
 
 
-
             </LinearLayout>
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

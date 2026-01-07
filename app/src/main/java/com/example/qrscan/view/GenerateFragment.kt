@@ -1,28 +1,26 @@
 package com.example.qrscan.view
 
-import android.R.attr.data
-import android.R.attr.visibility
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewParent
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.content.ContentProviderCompat.requireContext
-import androidx.core.content.ContextCompat.startActivity
 import androidx.core.content.FileProvider
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.example.qrscan.BaseFragment
+import com.example.qrscan.BottomNavController
 import com.example.qrscan.MainActivity
 import com.example.qrscan.R
 import com.example.qrscan.adapter.AdapterGenerate
@@ -32,14 +30,12 @@ import com.example.qrscan.adapter.generateMonth
 import com.example.qrscan.database.data.DataGenerateInMonth
 import com.example.qrscan.database.data.QRCodeEntity
 import com.example.qrscan.database.data.QRType
-import com.example.qrscan.databinding.BottomSelectItemsBinding
 import com.example.qrscan.databinding.FragmentGenerateBinding
 import com.example.qrscan.viewmodel.ScanViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileOutputStream
-import java.nio.file.Files.delete
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -80,7 +76,7 @@ class GenerateFragment : BaseFragment<FragmentGenerateBinding>(), Callback{
         val next = requireActivity().findViewById<ViewPager2>(R.id.viewPager)
         next.isUserInputEnabled = false
         super.onViewCreated(view, savedInstanceState)
-        (activity as? MainActivity)?.showBottomNav(true)
+        (activity as? BottomNavController)?.requestBottomNav(true)
 
 
 
@@ -89,13 +85,13 @@ class GenerateFragment : BaseFragment<FragmentGenerateBinding>(), Callback{
 
         mBinding.createnow.setOnClickListener {
 
-            next.currentItem = next.currentItem + 2
+            (activity as? MainActivity)?.navigateMain(CreateOptionFragment())
         }
         mBinding.generate.setOnClickListener {
             val next = requireActivity().findViewById<ViewPager2>(R.id.viewPager)
 
 
-            next.currentItem = 8
+            (activity as? MainActivity)?.navigateMain(CreateOptionFragment())
         }
         mBinding.root.setOnClickListener { clickedView ->
             if (isSelectMode) {
@@ -108,10 +104,13 @@ class GenerateFragment : BaseFragment<FragmentGenerateBinding>(), Callback{
 
                     clearAllChildAdaptersSelection()
                     bottomSelect.visibility = View.GONE
+
+
+                    (activity as? BottomNavController)?.requestBottomNav(true)
                 }
             }
         }
-        (activity as? MainActivity)?.showBottomNav(true)
+        (activity as? BottomNavController)?.requestBottomNav(true)
         listview=viewModel.getAll()
         lifecycleScope.launch {
             listview.collect {
@@ -143,22 +142,22 @@ class GenerateFragment : BaseFragment<FragmentGenerateBinding>(), Callback{
                                 DataGenerateInMonth(id = qr.id,
                                     image = when(qr.type){
                                         QRType.EMAIL ->{
-                                            R.drawable.email
+                                            R.drawable.emailvector
                                         }
                                         QRType.CONTACT -> {
-                                            R.drawable.contacts
+                                            R.drawable.contactsvector
                                         }
                                         QRType.EVENT -> {
-                                            R.drawable.calendar
+                                            R.drawable.calendarvector
                                         }
 
-                                        QRType.LOCATION->R.drawable.location
-                                        QRType.SMS -> R.drawable.sms
-                                        QRType.WIFI -> R.drawable.wifi
-                                        QRType.TEXT -> R.drawable.text
-                                        QRType.URL -> R.drawable.url
-                                        QRType.PHONE -> R.drawable.icon_phone
-                                        else -> R.drawable.icon_phone
+                                        QRType.LOCATION->R.drawable.locationvector
+                                        QRType.SMS -> R.drawable.smsvector
+                                        QRType.WIFI -> R.drawable.wifivector
+                                        QRType.TEXT -> R.drawable.textvector
+                                        QRType.URL -> R.drawable.urlvector
+                                        QRType.PHONE -> R.drawable.icon_phonevector
+                                        else -> R.drawable.icon_phonevector
                                     },
                                     title = qr.type.name,
                                     subtitle = dateFormat.format(Date(qr.createdAt))
@@ -173,14 +172,7 @@ class GenerateFragment : BaseFragment<FragmentGenerateBinding>(), Callback{
                     mBinding.recyclerview.adapter = adapter
 
                     adapter.submitData(grouped)
-//                    mBinding.bottomSelect.delete.setOnClickListener {
-//                        lifecycleScope.launch {
-//                            viewModel.deleteListByid(selectedIds)
-//                            selectedIds = emptyList()
-//                            childAdapter.clearSelectionMode()
-//                            bottomLayout.visibility = View.GONE
-//                        }
-//                    }
+
 
 
                 }
@@ -282,7 +274,7 @@ class GenerateFragment : BaseFragment<FragmentGenerateBinding>(), Callback{
         val next = requireActivity().findViewById<ViewPager2>(R.id.viewPager)
 
 
-        next.currentItem = 9
+        (activity as? MainActivity)?.navigateMain(CreateDetailFragment())
     }
 
     override fun onDelete(item: DataGenerateInMonth) {
@@ -300,11 +292,40 @@ class GenerateFragment : BaseFragment<FragmentGenerateBinding>(), Callback{
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        (activity as? BottomNavController)?.requestBottomNav(true)
+
+        if(isSelectMode){
+            adapter.clearAllSelection()
+            val bottomSelect =requireActivity().findViewById<View>(R.id.bottomSelect)
+            bottomSelect.visibility=View.GONE
+
+            isSelectMode=false
+            selectedIds=emptyList()
+
+            (activity as? BottomNavController)?.requestBottomNav(true)
+        }
+    }
+
     override fun onSelectionMode(isLongPressed: Boolean) {
         isSelectMode = isLongPressed
         Log.d("RecyclerViewData", "Data id: ${isSelectMode}")
+        val totalSelectedIds = adapter.getAllSelectedIds()
 
-        (activity as? MainActivity)?.showBottomNav(!isSelectMode)
+
+        if (!isLongPressed || totalSelectedIds.isEmpty()) {
+            if (totalSelectedIds.isEmpty()) {
+
+                adapter.clearAllSelection()
+                isSelectMode = false
+                selectedIds = emptyList()
+            }
+        } else {
+            isSelectMode = true
+        }
+
+        (activity as? BottomNavController)?.requestBottomNav(!isSelectMode)
         val bottomSelect = requireActivity().findViewById<View>(R.id.bottomSelect)
         val deleteButton = bottomSelect?.findViewById<ImageView>(R.id.delete)
         val downloadButton = bottomSelect?.findViewById<ImageView>(R.id.download)
@@ -316,7 +337,7 @@ class GenerateFragment : BaseFragment<FragmentGenerateBinding>(), Callback{
               lifecycleScope.launch {
                   viewModel.deleteCustomQRListByid(selectedIds)
                   selectedIds = emptyList()
-                  childAdapter.clearSelectionMode()
+                  adapter.clearAllSelection()
                   bottomSelect.visibility = View.GONE
               }
           }
@@ -342,8 +363,8 @@ class GenerateFragment : BaseFragment<FragmentGenerateBinding>(), Callback{
                   shareMultipleBitmapsAsPng(bitmaps)
 
 
-                  selectedIds = emptyList()
-                  childAdapter.clearSelectionMode()
+//                  selectedIds = emptyList()
+//                  childAdapter.clearSelectionMode()
                   bottomSelect.visibility = View.GONE
           }
       }}
@@ -353,8 +374,19 @@ class GenerateFragment : BaseFragment<FragmentGenerateBinding>(), Callback{
     }
 
     override fun onSelectedIdsChanged(ids: List<Int>) {
-        selectedIds = ids
-//        bottomLayout.delete.isEnabled = selectedIds.isNotEmpty()
+        selectedIds = adapter.getAllSelectedIds()
+        updateBottomSelectCount()
+
+
+    }
+
+    override fun onEnableSelectionModeForAll() {
+        adapter.enableSelectionModeForAll()
+    }
+    private fun updateBottomSelectCount() {
+        val bottomSelect = requireActivity().findViewById<View>(R.id.bottomSelect)
+        val tvFileSelect = bottomSelect?.findViewById<TextView>(R.id.tvnumberselectitem)
+        tvFileSelect?.text = "${selectedIds.size} File Select"
     }
 
 

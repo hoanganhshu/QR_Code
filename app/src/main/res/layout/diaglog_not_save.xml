@@ -75,7 +75,7 @@
                 android:paddingLeft="10dp"
                 android:fontFamily="@font/poppin_family"
 
-                android:textSize="17sp"
+                android:maxLines="2"
                 android:textColor="#3C52F5"
 
                 />
@@ -87,7 +87,7 @@
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="match_parent"
-                android:text="@string/save"
+                android:maxLines="2"
                 android:gravity="center"
                 android:fontFamily="@font/poppin_family"
 

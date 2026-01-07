@@ -8,7 +8,7 @@
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="@dimen/_290sdp"
-        android:layout_marginHorizontal="@dimen/_50sdp"
+        android:layout_marginHorizontal="@dimen/_30sdp"
         android:layout_marginTop="@dimen/_20sdp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -86,8 +86,7 @@
                 android:gravity="center"
                 android:id="@+id/cancel"
                 android:paddingLeft="10dp"
-
-                android:textSize="17sp"
+                android:maxLines="2"
                 android:textColor="#3C52F5"
 
                 />
@@ -103,8 +102,7 @@
                 android:text="@string/ok"
                 android:gravity="center"
                 android:id="@+id/accept"
-
-                android:textSize="17sp"
+                android:maxLines="2"
                 android:paddingRight="10dp"
                 android:textColor="#3C52F5"
 

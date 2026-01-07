@@ -8,6 +8,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/_20sdp"
         android:layout_margin="@dimen/_5sdp"
+        android:clickable="false"
+        android:focusable="false"
         android:paddingBottom="20dp"
         >
 
@@ -15,8 +17,9 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/_72sdp"
             app:layout_constraintTop_toTopOf="parent"
-
-
+            android:id="@+id/cardtv"
+            android:clickable="false"
+            android:focusable="false"
 
             app:layout_constraintStart_toStartOf="parent"
             app:strokeColor="#CDD0E3"
@@ -33,33 +36,53 @@
                 android:id="@+id/title"
                 android:textColor="@color/black"
                 android:textStyle="bold"
+                android:clickable="false"
+                android:focusable="false"
+
                 android:textSize="@dimen/_13sdp"
                 android:layout_marginTop="@dimen/_13sdp"
                 android:layout_marginStart="@dimen/_20sdp"
 
                 />
-            <com.google.android.material.textfield.TextInputEditText
-                android:layout_width="wrap_content"
+            <EditText
+                android:id="@+id/subtitle"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="start"
                 android:hint="@string/name_example"
                 android:fontFamily="@font/poppin_family"
                 android:textColor="@color/black"
                 android:textColorHint="#B4B7CC"
-                android:id="@+id/subtitle"
                 android:textSize="@dimen/_12sdp"
                 android:background="@null"
+                android:imeOptions="actionNext"
+                android:inputType="text"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
                 android:layout_marginTop="@dimen/_38sdp"
-
                 android:layout_marginStart="@dimen/_20sdp"
-
+                android:layout_marginEnd="@dimen/_20sdp"
                 />
 
 
 
+
         </com.google.android.material.card.MaterialCardView>
-
-
-
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:fontFamily="@font/regular"
+            android:text="@string/error"
+            android:id="@+id/error"
+            app:layout_constraintTop_toBottomOf="@+id/cardtv"
+            android:textColor="@color/red"
+            android:clickable="false"
+            android:visibility="gone"
+            android:layout_marginStart="@dimen/_20sdp"
+            android:layout_marginTop="5dp"
+            android:focusable="false"
+            android:textSize="@dimen/_8sdp"
+            app:layout_constraintStart_toStartOf="@+id/cardtv"
+            />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

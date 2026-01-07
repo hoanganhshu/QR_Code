@@ -10,6 +10,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:id="@+id/appbar"
+        android:paddingBottom="30dp"
         app:layout_constraintTop_toTopOf="parent"
         android:fontFamily="@font/poppin_family"
         app:layout_constraintStart_toStartOf="parent"
@@ -57,7 +58,7 @@
             android:id="@+id/generate"
             android:layout_marginTop="@dimen/_29sdp"
             android:layout_marginStart="@dimen/_23sdp"
-            android:src="@drawable/add"
+            android:src="@drawable/addvector"
             />
         <ImageView
             android:layout_width="24dp"
@@ -65,7 +66,7 @@
             android:layout_gravity="end"
             android:layout_marginTop="@dimen/_29sdp"
             android:layout_marginEnd="@dimen/_23sdp"
-            android:src="@drawable/edit"
+            android:src="@drawable/editvector"
             />
         <TextView
             android:layout_width="wrap_content"
@@ -94,13 +95,15 @@
 
     </FrameLayout>
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:textColor="#B4B7CC"
         android:textSize="@dimen/_17sdp"
         android:id="@+id/createsubtitle"
+        android:layout_marginHorizontal="@dimen/_28sdp"
+        android:gravity="center_horizontal"
         android:visibility="gone"
         android:textAlignment="center"
         app:layout_constraintBottom_toTopOf="@id/createnow"
@@ -108,8 +111,8 @@
         android:text="@string/emptygenerate"/>
 
     <androidx.cardview.widget.CardView
-        android:layout_width="@dimen/_280sdp"
-        android:layout_height="@dimen/_52sdp"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_42sdp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -118,14 +121,12 @@
         android:backgroundTint="@color/base"
         app:cardCornerRadius="@dimen/_13sdp"
         android:id="@+id/createnow"
-        android:layout_marginTop="@dimen/_40sdp"
-        android:layout_marginStart="@dimen/_24sdp"
-        android:layout_marginEnd="@dimen/_24sdp"
+        android:layout_marginHorizontal="@dimen/_24sdp"
 
         >
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/_24sdp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:id="@+id/tvcreatenow"
             android:text="@string/createnow"
             android:layout_gravity="center"
@@ -139,13 +140,15 @@
     </androidx.cardview.widget.CardView>
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:id="@+id/recyclerview"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginEnd="@dimen/_24sdp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/appbar"
+        app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginTop="@dimen/_30sdp"
+        android:paddingBottom="120dp"
         android:layout_marginStart="@dimen/_24sdp"
         />
 

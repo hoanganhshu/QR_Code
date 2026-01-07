@@ -23,9 +23,9 @@ object QRBarcodeParser {
                     QRType.PHONE,
                     content = barcode.rawValue.orEmpty(),
                     mapOf(
-                        "number" to phone?.number.asString(),
-                        "type" to phone?.type.asString(),
-                        "rawValue" to barcode.rawValue.asString()
+                        "Number" to phone?.number.asString(),
+                        "Type" to phone?.type.asString(),
+//                        "RawValue" to barcode.rawValue.asString()
                     )
                 )
             }
@@ -36,25 +36,27 @@ object QRBarcodeParser {
                     QRType.EMAIL,
                     content = barcode.rawValue.orEmpty(),
                     mapOf(
-                        "address" to email?.address.asString(),
-                        "subject" to email?.subject.asString(),
-                        "body" to email?.body.asString(),
-                        "type" to email?.type.asString(),
-                        "rawValue" to barcode.rawValue.asString()
+                        "Address" to email?.address.asString(),
+                        "Subject" to email?.subject.asString(),
+                        "Body" to email?.body.asString(),
+                        "Type" to email?.type.asString(),
+//                        "RawValue" to barcode.rawValue.asString()
                     )
                 )
             }
 
             Barcode.TYPE_WIFI -> {
                 val wifi = barcode.wifi
+
+                val encryption = mapWifiEncryption(wifi?.encryptionType)
                 ParsedQR(
                     QRType.WIFI,
                     content = barcode.rawValue.orEmpty(),
                     mapOf(
-                        "ssid" to wifi?.ssid.asString(),
-                        "password" to wifi?.password.asString(),
-                        "encryptionType" to wifi?.encryptionType.asString(),
-                        "rawValue" to barcode.rawValue.asString()
+                        "Ssid" to wifi?.ssid.asString(),
+                        "Password" to wifi?.password.asString(),
+                        "EncryptionType" to encryption,
+//                        "RawValue" to barcode.rawValue.asString()
                     )
                 )
             }
@@ -66,14 +68,14 @@ object QRBarcodeParser {
                     QRType.CONTACT,
                     content = barcode.rawValue.orEmpty(),
                     mapOf(
-                        "name" to name?.formattedName.asString(),
-                        "firstName" to name?.first.asString(),
-                        "lastName" to name?.last.asString(),
-                        "organization" to c?.organization.asString(),
-                        "title" to c?.title.asString(),
-                        "phones" to c?.phones?.joinToString { it.number.toString() }.asString(),
-                        "emails" to c?.emails?.joinToString { it.address.toString() }.asString(),
-                        "rawValue" to barcode.rawValue.asString()
+                        "Name" to name?.formattedName.asString(),
+                        "FirstName" to name?.first.asString(),
+                        "LastName" to name?.last.asString(),
+                        "Organization" to c?.organization.asString(),
+                        "Title" to c?.title.asString(),
+                        "Phones" to c?.phones?.joinToString { it.number.toString() }.asString(),
+                        "Emails" to c?.emails?.joinToString { it.address.toString() }.asString(),
+//                        "RawValue" to barcode.rawValue.asString()
                     )
                 )
             }
@@ -84,12 +86,12 @@ object QRBarcodeParser {
                     QRType.EVENT,
                     content = barcode.rawValue.orEmpty(),
                     mapOf(
-                        "summary" to event?.summary.asString(),
-                        "description" to event?.description.asString(),
-                        "location" to event?.location.asString(),
-                        "start" to event?.start?.rawValue.asString(),
-                        "end" to event?.end?.rawValue.asString(),
-                        "rawValue" to barcode.rawValue.asString()
+                        "Summary" to event?.summary.asString(),
+                        "Description" to event?.description.asString(),
+                        "Location" to event?.location.asString(),
+                        "Start" to event?.start?.rawValue.asString(),
+                        "End" to event?.end?.rawValue.asString(),
+//                        "RawValue" to barcode.rawValue.asString()
                     )
                 )
             }
@@ -100,8 +102,8 @@ object QRBarcodeParser {
                     QRType.URL,
                     content = barcode.rawValue.orEmpty(),
                     mapOf(
-                        "title" to url?.title.asString(),
-                        "url" to url?.url.asString()
+                        "Title" to url?.title.asString(),
+                        "Url" to url?.url.asString()
                     )
                 )
             }
@@ -110,15 +112,24 @@ object QRBarcodeParser {
                 ParsedQR(
                     QRType.TEXT,
                     content = barcode.rawValue.orEmpty(),
-                    mapOf("text" to barcode.rawValue.asString())
+                    mapOf("Text" to barcode.rawValue.asString())
                 )
             }
 
             else -> ParsedQR(
                 QRType.TEXT,
                 content = barcode.rawValue.orEmpty(),
-                mapOf("rawValue" to barcode.rawValue.asString())
+                mapOf("RawValue" to barcode.rawValue.asString())
             )
         }
     }
+    private fun mapWifiEncryption(type: Int?): String {
+        return when (type) {
+            Barcode.WiFi.TYPE_WPA -> "WPA"
+            Barcode.WiFi.TYPE_WEP -> "WEP"
+            Barcode.WiFi.TYPE_OPEN -> "nopass"
+            else -> "unknown"
+        }
+    }
+
 }

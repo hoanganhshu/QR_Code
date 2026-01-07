@@ -8,7 +8,11 @@ pluginManagement {
             }
         }
         mavenCentral()
+
+
         gradlePluginPortal()
+        maven { url = uri("https://artifactory.appodeal.com/appodeal-public") }
+
     }
 }
 dependencyResolutionManagement {
@@ -17,9 +21,11 @@ dependencyResolutionManagement {
         google()
 
         mavenCentral()
+        maven { url = uri("https://artifactory.appodeal.com/appodeal-public") }
     }
 }
 
 rootProject.name = "QRSCAN"
 include(":app")
+
  

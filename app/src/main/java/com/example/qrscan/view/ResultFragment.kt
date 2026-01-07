@@ -1,23 +1,22 @@
 package com.example.qrscan.view
 
-import android.R.attr.data
-import android.R.attr.type
 import android.graphics.BitmapFactory
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.widget.ViewPager2
 import com.example.qrscan.BaseFragment
+import com.example.qrscan.BottomNavController
 import com.example.qrscan.MainActivity
 import com.example.qrscan.R
 import com.example.qrscan.adapter.AdapterResult
-import com.example.qrscan.database.data.QRCodeEntity
 import com.example.qrscan.database.data.QRType
 import com.example.qrscan.databinding.FragmentResultBinding
 import com.example.qrscan.viewmodel.ScanViewModel
@@ -46,19 +45,29 @@ class ResultFragment : BaseFragment<FragmentResultBinding>(){
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        (activity as? MainActivity)?.showBottomNav(false)
+        requireActivity()
+            .findViewById<View>(R.id.bottomSelect)
+            ?.visibility = View.GONE
+
+        (activity as? BottomNavController)?.requestBottomNav(false)
         val next = requireActivity().findViewById<ViewPager2>(R.id.viewPager)
         next.isUserInputEnabled = false
 
         val adapter = AdapterResult()
         mBinding.recyclerview.layoutManager = LinearLayoutManager(requireContext())
         val divider = DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL)
+        divider.setDrawable(
+            ContextCompat.getDrawable(
+                requireContext(),
+                R.drawable.divider_white
+            )!!
+        )
         mBinding.recyclerview.addItemDecoration(divider)
 
         mBinding.recyclerview.adapter = adapter
         val qrType = viewModel.createOption.value ?: return
 
-        (activity as? MainActivity)?.showBottomNav(false)
+        (activity as? BottomNavController)?.requestBottomNav(false)
 
         val listData = viewModel.userInput.map { (key, value) ->
             mapOf(
@@ -70,10 +79,8 @@ class ResultFragment : BaseFragment<FragmentResultBinding>(){
             val adapter = mBinding.recyclerview.adapter as? AdapterResult
             adapter?.submitData(emptyList())
 
-
             viewModel.userInput = emptyMap()
-
-            next.currentItem = next.currentItem -1
+            (activity as? MainActivity)?.navigateMain(CreateDetailFragment())
 
         }
         qrType?.let { type ->
@@ -82,15 +89,15 @@ class ResultFragment : BaseFragment<FragmentResultBinding>(){
             mBinding.subtitle.text = getTodayFormatted()
 
             when (type) {
-                QRType.EMAIL -> mBinding.imagetitle.setImageResource(R.drawable.email)
-                QRType.PHONE -> mBinding.imagetitle.setImageResource(R.drawable.icon_phone)
-                QRType.LOCATION -> mBinding.imagetitle.setImageResource(R.drawable.location)
-                QRType.SMS -> mBinding.imagetitle.setImageResource(R.drawable.sms)
-                QRType.CONTACT -> mBinding.imagetitle.setImageResource(R.drawable.contacts)
-                QRType.URL -> mBinding.imagetitle.setImageResource(R.drawable.url)
-                QRType.WIFI -> mBinding.imagetitle.setImageResource(R.drawable.wifi)
-                QRType.TEXT -> mBinding.imagetitle.setImageResource(R.drawable.text)
-                QRType.EVENT -> mBinding.imagetitle.setImageResource(R.drawable.calendar)
+                QRType.EMAIL -> mBinding.imagetitle.setImageResource(R.drawable.emailvector)
+                QRType.PHONE -> mBinding.imagetitle.setImageResource(R.drawable.icon_phonevector)
+                QRType.LOCATION -> mBinding.imagetitle.setImageResource(R.drawable.locationvector)
+                QRType.SMS -> mBinding.imagetitle.setImageResource(R.drawable.smsvector)
+                QRType.CONTACT -> mBinding.imagetitle.setImageResource(R.drawable.contactsvector)
+                QRType.URL -> mBinding.imagetitle.setImageResource(R.drawable.urlvector)
+                QRType.WIFI -> mBinding.imagetitle.setImageResource(R.drawable.wifivector)
+                QRType.TEXT -> mBinding.imagetitle.setImageResource(R.drawable.textvector)
+                QRType.EVENT -> mBinding.imagetitle.setImageResource(R.drawable.calendarvector)
                 else -> {}
             }
         }
@@ -105,23 +112,23 @@ class ResultFragment : BaseFragment<FragmentResultBinding>(){
             mBinding.imageview.setImageResource(R.drawable.error)
         }
 
-
-
-
         adapter.submitData(listData)
         mBinding.cancel.setOnClickListener {
             val adapter = mBinding.recyclerview.adapter as? AdapterResult
             adapter?.submitData(emptyList())
 
             viewModel.userInput = emptyMap()
-            val next=requireActivity().findViewById<ViewPager2>(R.id.viewPager)
-            next.currentItem-=1
+            val next = requireActivity().findViewById<ViewPager2>(R.id.viewPager)
+            (activity as? MainActivity)?.navigateMain(CreateDetailFragment())
 
 
         }
         mBinding.save.setOnClickListener {
 
             val qrType = viewModel.createOption.value ?: return@setOnClickListener
+
+
+            viewModel.userInput = emptyMap()
 
             viewModel.saveCustomQR(
                 id = viewModel.itemIdCreate,
@@ -132,18 +139,7 @@ class ResultFragment : BaseFragment<FragmentResultBinding>(){
 
             Toast.makeText(requireContext(), getString(R.string.save), Toast.LENGTH_SHORT).show()
         }
-
-
-
-
-
-
-
-        }
-
-
-
-
+    }
     fun getTodayFormatted(): String {
         val calendar = Calendar.getInstance()
         val day = calendar.get(Calendar.DAY_OF_MONTH)

@@ -11,8 +11,6 @@ abstract class BaseAdapter<T> :  RecyclerView.Adapter<BaseAdapter<T>.ViewHolder>
 
     abstract fun getItemLayout(): Int
 
-
-
     val list : MutableList<T> =mutableListOf()
 
     private var itemClickListener: OnItemClickListener<T>? = null

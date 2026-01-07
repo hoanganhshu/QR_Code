@@ -4,7 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-
     tools:context=".view.SettingFragment">
 
     
@@ -43,28 +42,45 @@
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_marginHorizontal="@dimen/_24sdp"
-            android:layout_height="@dimen/_40sdp"
+            android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/create"
-            app:cardCornerRadius="@dimen/_15sdp"
-            android:visibility="gone"
-            app:layout_constraintStart_toStartOf="parent"
             android:backgroundTint="#F2F2F2"
+            app:strokeWidth="0dp"
+            android:visibility="gone"
+
+            app:layout_constraintStart_toStartOf="parent"
+
             android:layout_marginTop="@dimen/_46sdp"
+            app:cardCornerRadius="20dp"
+
             android:id="@+id/optionwifi"
             >
-            <LinearLayout
+            <com.google.android.material.button.MaterialButtonToggleGroup
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="horizontal"
+                android:backgroundTint="#F2F2F2"
+                app:singleSelection="true"
+                android:id="@+id/selectwifi"
                 >
 
 
 
-            <TextView
+
+
+            <com.google.android.material.button.MaterialButton
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
 
+                app:strokeWidth="0dp"
+                app:backgroundTint="#F2F2F2"
+                android:elevation="0dp"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:insetLeft="0dp"
+                android:insetRight="0dp"
+                android:textColor="@color/select"
+                android:foreground="@null"
                 android:text="@string/free"
                 android:layout_gravity="center"
                 android:gravity="center"
@@ -73,31 +89,48 @@
 
                 android:id="@+id/free"
                 />
-            <TextView
+            <com.google.android.material.button.MaterialButton
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:text="@string/wpa_wpa2"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:insetLeft="0dp"
+                app:backgroundTint="#F2F2F2"
+                android:insetRight="0dp"
+                android:textColor="@color/select"
+                android:foreground="@null"
+                app:strokeWidth="0dp"
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:textStyle="bold"
-
                 android:textSize="13sp"
                 android:id="@+id/wpa"
                 />
 
-            <TextView
+            <com.google.android.material.button.MaterialButton
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:layout_weight="1"
+                android:insetTop="0dp"
+                android:textColor="@color/select"
+                android:insetBottom="0dp"
+                android:insetLeft="0dp"
+                android:insetRight="0dp"
+                android:foreground="@null"
                 android:text="@string/wep"
+                app:backgroundTint="#F2F2F2"
+                app:strokeWidth="0dp"
                 android:textStyle="bold"
                 android:textSize="13sp"
                 android:id="@+id/wep"
                 />
-            </LinearLayout>
+            </com.google.android.material.button.MaterialButtonToggleGroup>
+
+
 
 
 
@@ -105,32 +138,31 @@
 
         </com.google.android.material.card.MaterialCardView>
 
-    <androidx.core.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:fillViewport="true"
-        app:layout_constraintTop_toBottomOf="@+id/optionwifi"
-        app:layout_constraintBottom_toTopOf="@id/cardcreate"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
 
         <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:id="@+id/recyclerview"
+            android:descendantFocusability="afterDescendants"
             android:layout_marginTop="@dimen/_28sdp"
+            android:clipToPadding="false"
             android:layout_marginHorizontal="@dimen/_24sdp"
-            android:nestedScrollingEnabled="false"
+            android:nestedScrollingEnabled="true"
+            app:layout_constraintBottom_toTopOf="@+id/cardcreate"
+            app:layout_constraintTop_toBottomOf="@+id/optionwifi"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:overScrollMode="always"
+            android:paddingBottom="600dp"
+
             />
-    </androidx.core.widget.NestedScrollView>
+
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
-        android:layout_height="72dp"
+        android:layout_height="@dimen/_50sdp"
         android:id="@+id/cardcreate"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-
-
         app:cardElevation="@dimen/_25sdp"
         >
 

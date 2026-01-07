@@ -5,10 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
-import androidx.viewpager2.widget.ViewPager2
 import com.example.qrscan.BaseFragment
+import com.example.qrscan.BottomNavController
 import com.example.qrscan.MainActivity
-import com.example.qrscan.R
 import com.example.qrscan.database.data.QRType
 import com.example.qrscan.databinding.FragmentCreateOptionBinding
 import com.example.qrscan.viewmodel.ScanViewModel
@@ -26,13 +25,13 @@ class CreateOptionFragment : BaseFragment<FragmentCreateOptionBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val next = requireActivity().findViewById<ViewPager2>(R.id.viewPager)
-        next.isUserInputEnabled = false
-        (activity as? MainActivity)?.showBottomNav(false)
+
+        (activity as? BottomNavController)?.requestBottomNav(false)
+
         setUpOptionCreate()
         mBinding.btnback.setOnClickListener {
 
-            next.currentItem = next.currentItem - 2
+            (activity as? MainActivity)?.navigateMain(GenerateFragment())
         }
 
     }
@@ -78,7 +77,6 @@ class CreateOptionFragment : BaseFragment<FragmentCreateOptionBinding>() {
     }
 
     private fun actionCreate() {
-        val next = requireActivity().findViewById<ViewPager2>(R.id.viewPager)
-        next.currentItem = next.currentItem + 1
+        (activity as? MainActivity)?.navigateMain(CreateDetailFragment())
     }
 }

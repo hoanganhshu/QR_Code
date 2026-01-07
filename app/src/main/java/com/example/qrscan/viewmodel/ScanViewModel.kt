@@ -9,8 +9,6 @@ import com.example.qrscan.database.data.QRCodeEntity
 import com.example.qrscan.database.data.QRCodeHistoryScanEntity
 import com.example.qrscan.database.data.QRType
 import com.example.qrscan.model.ScanModel
-import com.example.qrscan.view.QRBarcodeParser
-import com.google.mlkit.vision.barcode.common.Barcode
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -24,6 +22,9 @@ class ScanViewModel(application: Application) : AndroidViewModel(application) {
     private val _createOption = MutableStateFlow<QRType?>(null)
     var userInput: Map<String, String> = emptyMap()
 
+    private val _scannedType = MutableStateFlow<QRType?>(null)
+    val scannedType = _scannedType
+
 
     private val _userScan = MutableStateFlow<Map<String, String>>(emptyMap())
     val userScan = _userScan.asStateFlow()
@@ -34,19 +35,11 @@ class ScanViewModel(application: Application) : AndroidViewModel(application) {
     var isSave : Boolean = false
     private val _autoScanEnabled = MutableStateFlow(true)
 
-
-
-
-
     private val _scannedRaw = MutableStateFlow<String?>(null)
     var scannedRaw = _scannedRaw.asStateFlow()
 
     var byteQR: ByteArray? = null
     var byteScanQR: ByteArray? = null
-
-
-
-
 
     var content : String?=null
     var createOption = _createOption.asStateFlow()
@@ -81,9 +74,16 @@ class ScanViewModel(application: Application) : AndroidViewModel(application) {
     fun setVibrateEnabled(enabled: Boolean) {
         _vibrateEnabled.value = enabled
     }
+    fun clearCreateOption() {
+        _createOption.value = null
+    }
 
     fun setCreateOption(type: QRType) {
         _createOption.value = type
+    }
+
+    fun setScanOption(type: QRType) {
+        _scannedType.value = type
     }
     fun saveScanned(id : Int,type: QRType, content: String?, data: Map<String, String>) {
         viewModelScope.launch {
@@ -95,7 +95,6 @@ class ScanViewModel(application: Application) : AndroidViewModel(application) {
       return  model.getAllHistoryScan()
 
     }
-
 
     fun saveCustomQR(id : Int,type: QRType, content: String?, data: Map<String, String>) {
         viewModelScope.launch {
@@ -126,9 +125,5 @@ class ScanViewModel(application: Application) : AndroidViewModel(application) {
     suspend fun deleteCustomQRListByid(ids : List<Int>){
         model.deleteCustomQRListById(ids)
     }
-
-
-
-
 
 }

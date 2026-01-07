@@ -1,13 +1,13 @@
 package com.example.qrscan.view
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.viewpager2.widget.ViewPager2
+import androidx.fragment.app.Fragment
 import com.example.qrscan.BaseFragment
-import com.example.qrscan.R
+import com.example.qrscan.MainActivity
 import com.example.qrscan.databinding.FragmentPrivacyBinding
 
 // TODO: Rename parameter arguments, choose names that match
@@ -31,10 +31,14 @@ class PrivacyFragment : BaseFragment<FragmentPrivacyBinding>(){
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
       mBinding.btnback.setOnClickListener {
-          val next = requireActivity().findViewById<ViewPager2>(R.id.viewPager)
-          next.isUserInputEnabled = false
-          next.currentItem = next.currentItem -1
+          (activity as? MainActivity)?.navigateMain(SettingFragment())
       }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.e("NAV_DEBUG", "PrivacyFragment onResume", Throwable())
+
     }
 
 }

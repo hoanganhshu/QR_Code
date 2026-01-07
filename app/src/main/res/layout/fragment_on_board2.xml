@@ -30,7 +30,6 @@
             android:textSize="18dp"
             android:textStyle="bold"
             android:fontFamily="@font/poppin_family"
-
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imageView2" />
@@ -66,13 +65,10 @@
             android:id="@+id/skip"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-
-            android:layout_marginStart="@dimen/_20sdp"
+            android:layout_marginStart="24dp"
             android:fontFamily="@font/poppin_family"
             android:text="@string/skip"
             app:layout_constraintBottom_toBottomOf="@+id/imageView3"
-
-
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/imageView3" />
 

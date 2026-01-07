@@ -18,11 +18,10 @@ interface Callback{
     fun onSelectionMode(isLongPressed: Boolean)
     fun onSelectedIdsChanged(ids: List<Int>)
 
-
+    fun onEnableSelectionModeForAll()
 
 
 }
-
 class AdapterGenerateInMonth(private val callback: Callback) : BaseAdapter<DataGenerateInMonth>() {
     private val selectedItems = mutableListOf<Int>()
     private var isLongPressed = false
@@ -68,28 +67,34 @@ class AdapterGenerateInMonth(private val callback: Callback) : BaseAdapter<DataG
             selectedItems.add(item.id)
             callback.onSelectionMode(true)
             callback.onSelectedIdsChanged(selectedItems)
+            callback.onEnableSelectionModeForAll()
 
 
             notifyDataSetChanged()
             true
         }
 
-
-
         if (isLongPressed) {
+            mBinding.threedot.isEnabled=false
             mBinding.circle.visibility=View.VISIBLE
 
-
-
-
             if (selectedItems.contains(item.id)) {
-                mBinding.select.setImageResource(R.drawable.image_select)
+                mBinding.select.setImageResource(R.drawable.image_selectvector)
                 mBinding.circleImage.setBackgroundColor(Color.parseColor("#3C52F5"))
+                mBinding.cardContainer.strokeColor =
+                    ContextCompat.getColor(mBinding.root.context, R.color.base)
+
+            }
+            else {
+                mBinding.circleImage.setBackgroundColor(Color.TRANSPARENT)
+                mBinding.select.setImageResource(0)
+                mBinding.cardContainer.strokeColor =Color.parseColor("#CDD0E3")
+
             }
         } else {
+            mBinding.cardContainer.strokeColor =Color.parseColor("#CDD0E3")
+            mBinding.threedot.isEnabled=true
             mBinding.circle.visibility=View.GONE
-
-
 
         }
         mBinding.circle.setOnClickListener {
@@ -97,11 +102,6 @@ class AdapterGenerateInMonth(private val callback: Callback) : BaseAdapter<DataG
                 toggleItem(item.id)
             }
         }
-
-
-
-
-
 
     }
     private fun toggleItem(id: Int) {
@@ -125,10 +125,17 @@ class AdapterGenerateInMonth(private val callback: Callback) : BaseAdapter<DataG
         notifyDataSetChanged()
         Log.d("HISTORY", "userScan size = no action")
 
-        callback.onSelectionMode(false)
-        callback.onSelectedIdsChanged(emptyList())
-
     }
+    fun enableSelectionMode() {
+        if (!isLongPressed) {
+            isLongPressed = true
+            notifyDataSetChanged()
+        }
+    }
+    fun getSelectedIds(): List<Int> {
+        return selectedItems.toList()
+    }
+
 
 
 

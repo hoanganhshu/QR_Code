@@ -3,37 +3,34 @@ package com.example.qrscan.view
 import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RatingBar
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.app.ActivityCompat.recreate
-import androidx.core.content.ContentProviderCompat.requireContext
-import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.startActivity
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.os.LocaleListCompat
 import androidx.fragment.app.activityViewModels
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
+import com.aigestudio.wheelpicker.WheelPicker
 import com.example.qrscan.BaseFragment
+import com.example.qrscan.BottomNavController
 import com.example.qrscan.MainActivity
 import com.example.qrscan.R
-import com.example.qrscan.adapter.AdapterLanguage
 import com.example.qrscan.databinding.FragmentSettingBinding
 import com.example.qrscan.viewmodel.ScanViewModel
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.play.core.review.ReviewManagerFactory
 import java.util.Locale
 
 class SettingFragment : BaseFragment<FragmentSettingBinding>(){
+
     private val viewModel : ScanViewModel by activityViewModels()
+    val EXTRA_DESTINATION = "destination"
+
+    val DEST_SETTING = "setting"
 
     override fun inflate(
         layoutInflater: LayoutInflater,
@@ -47,18 +44,52 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(){
         super.onViewCreated(view, savedInstanceState)
         val next = requireActivity().findViewById<ViewPager2>(R.id.viewPager)
         next.isUserInputEnabled = false
+        (activity as? MainActivity)?.showBottomNav(true)
+        mBinding.privatelinear.isClickable = false
+        mBinding.privatelinear.isEnabled = false
 
-        mBinding.switchvibeep.setOnCheckedChangeListener { _, isChecked ->
-            viewModel.setBeepEnabled(isChecked)
+        // ✅ enable sau khi UI ổn định
+        view.post {
+            mBinding.privatelinear.isClickable = true
+            mBinding.privatelinear.isEnabled = true
         }
 
-        mBinding.switchvibrate.setOnCheckedChangeListener { _, isChecked ->
-            viewModel.setVibrateEnabled(isChecked)
-        }
-        mBinding.switchhistory.setOnCheckedChangeListener { _, isChecked ->
-            viewModel.isSave=isChecked
 
+
+        val ctx = requireContext()
+
+        mBinding.switchhistory.isChecked =
+            ScanSettingPrefs.getBoolean(ctx, "save_history", false)
+
+        mBinding.switchvibeep.isChecked =
+            ScanSettingPrefs.getBoolean(ctx, "beep", false)
+
+        mBinding.switchvibrate.isChecked =
+            ScanSettingPrefs.getBoolean(ctx, "vibrate", false)
+
+        mBinding.switchscan.isChecked =
+            ScanSettingPrefs.getBoolean(ctx, "auto_scan", true)
+
+        mBinding.switchhistory.setOnCheckedChangeListener { _, checked ->
+            ScanSettingPrefs.saveBoolean(ctx, "save_history", checked)
+            viewModel.isSave = checked
         }
+
+        mBinding.switchvibeep.setOnCheckedChangeListener { _, checked ->
+            ScanSettingPrefs.saveBoolean(ctx, "beep", checked)
+            viewModel.setBeepEnabled(checked)
+        }
+
+        mBinding.switchvibrate.setOnCheckedChangeListener { _, checked ->
+            ScanSettingPrefs.saveBoolean(ctx, "vibrate", checked)
+            viewModel.setVibrateEnabled(checked)
+        }
+
+        mBinding.switchscan.setOnCheckedChangeListener { _, checked ->
+            ScanSettingPrefs.saveBoolean(ctx, "auto_scan", checked)
+            viewModel.setAutoScanEnabled(checked)
+        }
+
         mBinding.sharelinear.setOnClickListener {
             shareApp()
 
@@ -83,160 +114,90 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(){
 
         }
         mBinding.privatelinear.setOnClickListener {
-
-            next.currentItem = 12
+            (activity as? MainActivity)?.navigateMain(PrivacyFragment())
         }
-//        mBinding.languagelinear.setOnClickListener {
-//
-//                val dialogView = layoutInflater.inflate(R.layout.diafglog_change_language, null)
-//            val btnSubmit = dialogView.findViewById<MaterialCardView>(R.id.accept)
-//                val builder = MaterialAlertDialogBuilder(requireContext())
-//                    .setView(dialogView)
-//                    .setCancelable(true)
-//                    .create()
-//            val languages = listOf("English"," VietNam","Japan","Germany","India")
-//            val appLocales = AppCompatDelegate.getApplicationLocales()
-//            val locale = appLocales.get(0) ?: Locale("en", "US")
-//            val currentLanguage = when (locale.language) {
-//                "en" -> "English"
-//                "vi" -> " VietNam"
-//                "ja" -> "Japan"
-//                "de" -> "Germany"
-//                "hi" -> "India"
-//                else -> "English"
-//            }
-//
-//
-//
-////            val languageAdapter = AdapterLanguage { selectedLanguage ->
-////                    Toast.makeText(requireContext(), "Selected: $selectedLanguage", Toast.LENGTH_SHORT).show()
-////                    when (selectedLanguage) {
-////                        "English" -> changeLanguage("en")
-////                        "VietNam" -> changeLanguage("vi")
-////                        "Japan" -> changeLanguage("ja")
-////                        "Germany" -> changeLanguage("de")
-////                        "India" -> changeLanguage("hi")
-////                    }
-////                    updateLanguageText()
-////                }
-//
-////            val languageAdapter = AdapterLanguage(
-////                selectedLanguage = currentLanguage,
-////                onClick = { selectedLanguage ->
-////                    Toast.makeText(requireContext(), "Selected: $selectedLanguage", Toast.LENGTH_SHORT).show()
-////                    when (selectedLanguage.trim()) {
-////                        "English" -> changeLanguage("en")
-////                        " VietNam" -> changeLanguage("vi")
-////                        "Japan" -> changeLanguage("ja")
-////                        "Germany" -> changeLanguage("de")
-////                        "India" -> changeLanguage("hi")
-////                    }
-////                    updateLanguageText()
-////                    builder.dismiss()
-////                }
-////            )
-//            var pendingSelection: String? = currentLanguage
-//            val languageAdapter = AdapterLanguage(
-//                selectedLanguage = currentLanguage,
-//                onClick = { selectedLanguage ->
-//                    // Chỉ update highlight, không apply language
-//                    pendingSelection = selectedLanguage.trim()
-//                    languageAdapter.setSelectedLanguage(pendingSelection)
-//                    Toast.makeText(requireContext(), "Selected: $selectedLanguage", Toast.LENGTH_SHORT).show()
-//                }
-//            )
-//
-//            btnSubmit.setOnClickListener {
-//                if (pendingSelection != null) {
-//                    when (pendingSelection) {
-//                        "English" -> changeLanguage("en")
-//                        " VietNam" -> changeLanguage("vi")
-//                        "Japan" -> changeLanguage("ja")
-//                        "Germany" -> changeLanguage("de")
-//                        "India" -> changeLanguage("hi")
-//                    }
-//                    updateLanguageText()
-//                }
-//                builder.dismiss()
-//            }
-//
-//
-//            btnSubmit.setOnClickListener {
-//                builder.dismiss()
-//            }
-//            languageAdapter.submitData(languages)
-//                dialogView.findViewById<RecyclerView>(R.id.recyclerviewlanguage).apply {
-//                    layoutManager = LinearLayoutManager(requireContext())
-//                    adapter = languageAdapter
-//                }
-//
-//            builder.window?.setBackgroundDrawableResource(android.R.color.transparent)
-//                builder.show()
-//
-//
-//
-//        }
+
 
         mBinding.languagelinear.setOnClickListener {
             val dialogView = layoutInflater.inflate(R.layout.diafglog_change_language, null)
             val btnSubmit = dialogView.findViewById<MaterialCardView>(R.id.accept)
+            val txtlanguage=dialogView.findViewById<WheelPicker>(R.id.language)
             val builder = MaterialAlertDialogBuilder(requireContext())
                 .setView(dialogView)
                 .setCancelable(true)
                 .create()
+            val typeface = ResourcesCompat.getFont(requireContext(), R.font.regular)
 
-            val languages = listOf("English", " VietNam", "Japan", "Germany", "India")
-            val appLocales = AppCompatDelegate.getApplicationLocales()
-            val locale = appLocales.get(0) ?: Locale("en", "US")
-            val currentLanguage = when (locale.language) {
-                "en" -> "English"
-                "vi" -> " VietNam"
-                "ja" -> "Japan"
-                "de" -> "Germany"
-                "hi" -> "India"
-                else -> "English"
+
+
+
+
+            val items= listOf<String>("English", "VietNam", "Japan", "Germany", "India")
+            txtlanguage.data = items
+            val savedLanguage = LanguagePrefs.get(requireContext())
+
+
+            txtlanguage.typeface=typeface
+
+
+
+            var selectedLanguage = savedLanguage
+
+
+
+            txtlanguage.setOnItemSelectedListener { _, data, position ->
+                selectedLanguage = data as String
+                Log.d("DEBUG", "Wheel settled -> position=$position value=$selectedLanguage")
             }
 
-            var pendingSelection: String? = currentLanguage
-            lateinit var languageAdapter: AdapterLanguage
-
-             languageAdapter = AdapterLanguage(
-                selectedLanguage = currentLanguage,
-                onClick = { selectedLanguage ->
-                    pendingSelection = selectedLanguage.trim()
-                    languageAdapter.setSelectedLanguage(pendingSelection)
-                    Toast.makeText(requireContext(), "Selected: $selectedLanguage", Toast.LENGTH_SHORT).show()
-                }
-            )
 
             btnSubmit.setOnClickListener {
-                if (pendingSelection != null) {
-                    when (pendingSelection) {
+
+
+
+                if (selectedLanguage != null) {
+                    when (selectedLanguage.trim()) {
                         "English" -> changeLanguage("en")
-                        " VietNam" -> changeLanguage("vi")
+                        "VietNam" -> changeLanguage("vi")
                         "Japan" -> changeLanguage("ja")
                         "Germany" -> changeLanguage("de")
                         "India" -> changeLanguage("hi")
                     }
-                    updateLanguageText()
+                    LanguagePrefs.save(requireContext(), selectedLanguage)
+                    restartAppToSetting()
+
+
                 }
+                Log.d("DEBUG","index=${selectedLanguage}")
                 builder.dismiss()
             }
 
-            languageAdapter.submitData(languages)
-            dialogView.findViewById<RecyclerView>(R.id.recyclerviewlanguage).apply {
-                layoutManager = LinearLayoutManager(requireContext())
-                adapter = languageAdapter
 
-
-                val divider = DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL)
-                val drawable = ContextCompat.getDrawable(requireContext(), android.R.drawable.divider_horizontal_dark)
-                divider.setDrawable(drawable!!)
-                addItemDecoration(divider)
-            }
 
             builder.window?.setBackgroundDrawableResource(android.R.color.transparent)
             builder.show()
+
+            txtlanguage.postDelayed({
+
+                val locale = resources.configuration.locales[0]
+                val currentLanguage = when (locale.language) {
+                    "en" -> "English"
+                    "vi" -> "VietNam"
+                    "ja" -> "Japan"
+                    "de" -> "Germany"
+                    "hi" -> "India"
+                    else -> "English"
+                }
+
+                val index = items.indexOf(currentLanguage)
+                Log.e("LANG", "FINAL index=$index language=$currentLanguage")
+
+                if (index >= 0) {
+                    txtlanguage.selectedItemPosition = index
+                }
+
+            }, 0)
+
         }
         mBinding.ratelinear.setOnClickListener {
             val dialogView = layoutInflater.inflate(R.layout.dialog_rate, null)
@@ -259,9 +220,7 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(){
             builder.window?.setBackgroundDrawableResource(android.R.color.transparent)
 
 
-        }
-        mBinding.switchscan.setOnCheckedChangeListener {_, isChecked ->
-            viewModel.setAutoScanEnabled(isChecked)
+
 
         }
 
@@ -269,7 +228,7 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(){
     }
     override fun onResume() {
         super.onResume()
-        (activity as? MainActivity)?.showBottomNav(true)
+        (activity as? BottomNavController)?.requestBottomNav(true)
     }
     private fun shareApp() {
         val shareText = getString(R.string.shareapp)
@@ -284,9 +243,8 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(){
     private fun changeLanguage(languageCode: String) {
         val locales = LocaleListCompat.forLanguageTags(languageCode)
         AppCompatDelegate.setApplicationLocales(locales)
-        recreate(requireActivity())
-
     }
+
     private fun updateLanguageText() {
         val appLocales = AppCompatDelegate.getApplicationLocales()
         val locale = appLocales.get(0) ?: Locale.getDefault()
@@ -306,6 +264,18 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(){
 
         mBinding.txtlanguage.text = languageName
     }
+    private fun restartAppToSetting() {
+        val intent = Intent(requireContext(), MainActivity::class.java).apply {
+            putExtra(EXTRA_DESTINATION, DEST_SETTING)
+            addFlags(
+                Intent.FLAG_ACTIVITY_NEW_TASK or
+                        Intent.FLAG_ACTIVITY_CLEAR_TASK
+            )
+        }
+        startActivity(intent)
+        Runtime.getRuntime().exit(0)
+    }
+
 
 
 

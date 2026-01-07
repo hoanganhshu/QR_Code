@@ -6,24 +6,24 @@
 
     <item
         android:id="@+id/nav_scan"
-        android:icon="@drawable/nav_scan"
+        android:icon="@drawable/nav_scanvector"
         android:title="Scanner"
         app:showAsAction="always"/>
 
     <item
         android:id="@+id/nav_history"
-        android:icon="@drawable/nav_history"
+        android:icon="@drawable/nav_historyvector"
         android:title="History"
         app:showAsAction="always"/>
     <item
         android:id="@+id/nav_qr_code"
-        android:icon="@drawable/nav_qr_code"
+        android:icon="@drawable/nav_qr_codevector"
         android:title="Generate"
         app:showAsAction="always"/>
 
     <item
         android:id="@+id/nav_settings"
-        android:icon="@drawable/nav_setting"
+        android:icon="@drawable/nav_settingvector"
         android:title="Settings"
         app:showAsAction="always"/>
 

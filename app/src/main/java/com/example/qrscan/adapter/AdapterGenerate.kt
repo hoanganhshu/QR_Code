@@ -1,6 +1,5 @@
 package com.example.qrscan.adapter
 
-import android.content.Context
 import android.view.MotionEvent
 import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,6 +16,7 @@ data class generateMonth(
 )
 
 class AdapterGenerate(private val callback: Callback) : BaseAdapter<generateMonth>(){
+    private val childAdapters = mutableListOf<AdapterGenerateInMonth>()
     override fun getItemLayout(): Int {
         return R.layout.item_day_generate
     }
@@ -35,6 +35,10 @@ class AdapterGenerate(private val callback: Callback) : BaseAdapter<generateMont
 
         mBinding.recyclerview.adapter = childAdapter
         mBinding.recyclerview.layoutManager= LinearLayoutManager(context)
+        if (!childAdapters.contains(childAdapter)) {
+            childAdapters.add(childAdapter)
+        }
+
 
 
         childAdapter.submitData(item.items)
@@ -53,5 +57,23 @@ class AdapterGenerate(private val callback: Callback) : BaseAdapter<generateMont
         })
 
     }
+    fun clearAllSelection() {
+        childAdapters.forEach {
+            it.clearSelectionMode()
+        }
+    }
+    fun enableSelectionModeForAll() {
+        childAdapters.forEach {
+            it.enableSelectionMode()
+        }
+    }
+    fun getAllSelectedIds(): List<Int> {
+        val allSelectedIds = mutableListOf<Int>()
+        childAdapters.forEach { adapter ->
+            allSelectedIds.addAll(adapter.getSelectedIds())
+        }
+        return allSelectedIds.distinct()
+    }
+
 
 }

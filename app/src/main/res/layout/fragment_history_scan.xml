@@ -22,7 +22,7 @@
 
     <TextView
         android:layout_width="match_parent"
-        android:text="@string/create"
+        android:text="@string/qrcode"
         android:textStyle="bold"
         android:id="@+id/create"
         android:background="@color/base"
@@ -44,11 +44,11 @@
         android:layout_height="wrap_content"
         android:id="@+id/layout"
         android:background="@color/white"
-        android:layout_marginHorizontal="@dimen/_36sdp"
+        android:layout_marginHorizontal="@dimen/_20sdp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:cardCornerRadius="@dimen/_15sdp"
+        app:cardCornerRadius="@dimen/_12sdp"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="@dimen/_20sdp"
+        android:layout_marginTop="@dimen/_30sdp"
         app:layout_constraintTop_toBottomOf="@+id/create"
 
         >
@@ -104,7 +104,17 @@
             </LinearLayout>
 
 
+
         </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:layout_marginTop="75dp"
+
+            android:background="@drawable/decor_dot"
+
+
+            />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:layout_width="match_parent"
@@ -134,6 +144,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
+                android:background="#DAE7F8"
                 >
                 <TextView
                     android:layout_width="0dp"
@@ -142,16 +153,17 @@
                     android:text="@string/action"
                     android:fontFamily="@font/poppin_family"
                     android:gravity="center"
+                    android:paddingHorizontal="15dp"
                     android:id="@+id/action"
                     android:layout_gravity="center"
-                    android:textSize="20dp"
+                    android:maxLines="2"
                     android:textColor="@color/base"
                     android:textStyle="bold"
                     />
                 <View
                     android:layout_width="2dp"
                     android:layout_height="match_parent"
-                    android:background="#E0E0E0"
+                    android:background="@color/white"
                     />
                 <TextView
                     android:layout_width="0dp"
@@ -159,11 +171,13 @@
                     android:layout_weight="1"
                     android:fontFamily="@font/poppin_family"
                     android:text="@string/share"
+                    android:paddingHorizontal="15dp"
                     android:gravity="center"
+
 
                     android:id="@+id/share"
                     android:layout_gravity="center"
-                    android:textSize="20dp"
+                    android:maxLines="2"
                     android:textColor="@color/base"
                     android:textStyle="bold"
                     />

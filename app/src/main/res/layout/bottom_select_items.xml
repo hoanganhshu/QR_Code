@@ -35,7 +35,7 @@
               android:layout_marginStart="@dimen/_20sdp"
 
               android:layout_height="24dp"
-              android:src="@drawable/icon_share"
+              android:src="@drawable/icon_sharevector"
               android:id="@+id/download"
               />
           <TextView
@@ -46,8 +46,7 @@
               android:textColor="@color/black"
               android:fontFamily="@font/poppin_family"
               android:textStyle="bold"
-
-
+              android:id="@+id/tvnumberselectitem"
               android:clickable="false"
               android:focusable="false"
               android:textSize="@dimen/_14sdp"
@@ -59,7 +58,7 @@
               android:layout_width="24dp"
               android:layout_gravity="end|center_vertical"
               android:layout_marginEnd="@dimen/_20sdp"
-              android:src="@drawable/icon_delete"
+              android:src="@drawable/icon_deletevector"
 
               android:layout_height="24dp"
               android:id="@+id/delete"

@@ -1,5 +1,3 @@
-import org.gradle.kotlin.dsl.implementation
-
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -15,13 +13,14 @@ android {
 
     defaultConfig {
         applicationId = "com.example.qrscan"
-        minSdk = 34
+        minSdk = 26
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
+
 
 
     buildTypes {
@@ -47,6 +46,9 @@ android {
 }
 room {
     schemaDirectory("$projectDir/schemas")
+}
+configurations.all {
+    exclude(group = "com.android.support")
 }
 
 
@@ -86,6 +88,8 @@ dependencies {
     // (optional) Photo picker compat
     implementation ("androidx.activity:activity-ktx:1.9.2")
 
+    implementation("com.google.android.gms:play-services-code-scanner:16.1.0")
+
 
     val room_version = "2.8.3"
 
@@ -101,6 +105,7 @@ dependencies {
 
     // optional - Kotlin Extensions and Coroutines support for Room
     implementation("androidx.room:room-ktx:$room_version")
+
 
     // optional - RxJava2 support for Room
     implementation("androidx.room:room-rxjava2:$room_version")
@@ -119,12 +124,13 @@ dependencies {
 
     implementation("com.google.code.gson:gson:2.11.0")
 
-
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0")
     implementation("androidx.fragment:fragment-ktx:1.7.1")
 
-
     implementation("com.google.zxing:core:3.5.4")
 
+    implementation("com.google.android.gms:play-services-code-scanner:16.1.0")
+
+    implementation("cn.aigestudio.wheelpicker:WheelPicker:1.1.3")
 
 }

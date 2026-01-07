@@ -99,4 +99,8 @@
     <string name="not_save">If you leave before saving, your code will be lost.</string>
     <string name="notsavesub">This cannot be undone.</string>
     <string name="numberfileselect">File Select</string>
+    <string name="error">This field cannot be left empty</string>
+    <string name="on_flash">The flash has been turned on.</string>
+    <string name="off_flash">The flash has been turned off.</string>
+    <string name="no_qr">No QR code found in the image.</string>
 </resources>

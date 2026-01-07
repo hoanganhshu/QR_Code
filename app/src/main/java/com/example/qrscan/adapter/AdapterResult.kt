@@ -11,8 +11,15 @@ class AdapterResult(private val textColor : Int = Color.WHITE) : BaseAdapter<Map
 
     override fun setData(binding: ViewDataBinding, item: Map<String, String>, position: Int) {
         val mBinding = binding as ItemResultBinding
+        val title = item["title"]
+            ?.toString()
+            ?.trim()
+            ?.lowercase()
+            ?.replaceFirstChar { it.uppercase() }
+            ?: ""
 
-        mBinding.tvTitle.text = item["title"]
+
+        mBinding.tvTitle.text = title
         mBinding.tvSubtitle.text = item["subtitle"]
         mBinding.tvTitle.setTextColor(textColor)
         mBinding.tvSubtitle.setTextColor(textColor)

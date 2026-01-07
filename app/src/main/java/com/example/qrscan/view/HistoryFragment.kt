@@ -4,44 +4,36 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
-import android.telecom.Call
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewParent
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.core.content.FileProvider
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.widget.ViewPager2
 import com.example.qrscan.BaseFragment
+import com.example.qrscan.BottomNavController
 import com.example.qrscan.MainActivity
 import com.example.qrscan.R
-import com.example.qrscan.adapter.AdapterGenerate
 import com.example.qrscan.adapter.AdapterHistory
 import com.example.qrscan.adapter.AdapterHistoryInMonth
 import com.example.qrscan.adapter.Callbach
-import com.example.qrscan.adapter.Callback
-import com.example.qrscan.adapter.generateMonth
-import com.example.qrscan.database.data.DataGenerateInMonth
 import com.example.qrscan.database.data.HistoryScan
-import com.example.qrscan.database.data.QRCodeEntity
 import com.example.qrscan.database.data.QRCodeHistoryScanEntity
-import com.example.qrscan.database.data.QRType
 import com.example.qrscan.databinding.FragmentHistoryBinding
 import com.example.qrscan.viewmodel.ScanViewModel
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import kotlin.collections.component1
-import kotlin.collections.component2
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -75,17 +67,15 @@ class HistoryFragment : BaseFragment<FragmentHistoryBinding>(), Callbach{
         val next = requireActivity().findViewById<ViewPager2>(R.id.viewPager)
         next.isUserInputEnabled = false
 
-        (activity as? MainActivity)?.showBottomNav(true)
+        (activity as? BottomNavController)?.requestBottomNav(true)
         adapter = AdapterHistory(this@HistoryFragment)
         childAdapter= AdapterHistoryInMonth(this@HistoryFragment)
         mBinding.scannow.setOnClickListener {
-            next.currentItem=4
+            (activity as? MainActivity)?.navigateMain(ScanFragment())
         }
         mBinding.generate.setOnClickListener {
             val next = requireActivity().findViewById<ViewPager2>(R.id.viewPager)
-
-
-            next.currentItem = 8
+            (activity as? MainActivity)?.navigateMain(CreateOptionFragment())
         }
 
         mBinding.itemDayHistory.layoutManager =
@@ -101,8 +91,9 @@ class HistoryFragment : BaseFragment<FragmentHistoryBinding>(), Callbach{
                 if (!isViewInsideView(clickedView, recyclerView) &&
                     !isViewInsideView(clickedView, bottomSelect)) {
 
-                    childAdapter.clearSelectionMode()
+                    adapter.clearAllSelections()
                     bottomSelect.visibility=View.GONE
+                    (activity as? BottomNavController)?.requestBottomNav(true)
                 }
             }
         }
@@ -138,13 +129,26 @@ class HistoryFragment : BaseFragment<FragmentHistoryBinding>(), Callbach{
                     }
 
                 adapter.submitData(grouped)
+
+
             }
         }
 
+    }
 
+    override fun onResume() {
+        super.onResume()
+        (activity as? BottomNavController)?.requestBottomNav(true)
+        if(isSelectMode){
+            adapter.clearAllSelections()
+            val bottomSelect =requireActivity().findViewById<View>(R.id.bottomSelect)
+            bottomSelect.visibility=View.GONE
 
+            isSelectMode=false
+            selectedIds=emptyList()
 
-
+            (activity as? BottomNavController)?.requestBottomNav(true)
+        }
     }
     private fun isViewInsideView(view: View, parentView: View): Boolean {
         var currentParent: ViewParent? = view.parent
@@ -206,8 +210,23 @@ class HistoryFragment : BaseFragment<FragmentHistoryBinding>(), Callbach{
     override fun onSelectionMode(isLongPressed: Boolean) {
         isSelectMode = isLongPressed
         Log.d("RecyclerViewData", "Data id: ${isSelectMode}")
+        if (!isLongPressed) {
+            val totalSelectedIds = adapter.getAllSelectedIds()
+            if (totalSelectedIds.isEmpty()) {
 
-        (activity as? MainActivity)?.showBottomNav(!isSelectMode)
+                adapter.clearAllSelections()
+                isSelectMode = false
+                selectedIds = emptyList()
+            } else {
+
+                isSelectMode = true
+                return
+            }
+        } else {
+            isSelectMode = true
+        }
+
+        (activity as? BottomNavController)?.requestBottomNav(!isSelectMode)
         val bottomSelect = requireActivity().findViewById<View>(R.id.bottomSelect)
         val deleteButton = bottomSelect?.findViewById<ImageView>(R.id.delete)
         val downloadButton = bottomSelect?.findViewById<ImageView>(R.id.download)
@@ -244,9 +263,8 @@ class HistoryFragment : BaseFragment<FragmentHistoryBinding>(), Callbach{
 
                     shareMultipleBitmapsAsPng(bitmaps)
 
-
-                    selectedIds = emptyList()
-                    childAdapter.clearSelectionMode()
+//                    selectedIds = emptyList()
+//                    childAdapter.clearSelectionMode()
                     bottomSelect.visibility = View.GONE
             }}
         }
@@ -287,8 +305,18 @@ class HistoryFragment : BaseFragment<FragmentHistoryBinding>(), Callbach{
     }
 
     override fun onSelectedIdsChanged(ids: List<Int>) {
-        selectedIds = ids
+        selectedIds = adapter.getAllSelectedIds()
+        updateBottomSelectCount()
 
+    }
+
+    override fun onEnableSelectionModeForAll() {
+        adapter.enableSelectionModeForAll()
+    }
+    private fun updateBottomSelectCount() {
+        val bottomSelect = requireActivity().findViewById<View>(R.id.bottomSelect)
+        val tvFileSelect = bottomSelect?.findViewById<TextView>(R.id.tvnumberselectitem)
+        tvFileSelect?.text = "${selectedIds.size} File Select"
     }
 }
 

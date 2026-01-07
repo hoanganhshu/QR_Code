@@ -2,33 +2,48 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="wrap_content"
-    android:background="@android:color/transparent"
-    android:layout_height="wrap_content">
+    android:layout_width="match_parent"
 
+
+    android:layout_height="wrap_content"
+>
     <com.google.android.material.card.MaterialCardView
-        android:layout_width="@dimen/_200sdp"
-        android:layout_height="@dimen/_280sdp"
-        android:layout_marginHorizontal="@dimen/_55sdp"
-        android:layout_marginTop="@dimen/_20sdp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintDimensionRatio="249:331"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+     app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
 
+        android:layout_marginHorizontal="@dimen/_42sdp"
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:layout_marginTop="@dimen/_20sdp"
 
         app:cardCornerRadius="15dp"
+        android:elevation="5dp"
         app:strokeColor="#DCDCF0"
-        app:strokeWidth="1dp"
+        android:paddingBottom="15dp"
+        app:strokeWidth="1dp">
 
-        >
+   <androidx.constraintlayout.widget.ConstraintLayout
+       android:layout_width="match_parent"
+       android:layout_height="match_parent">
+
+
+
+
+
+
 
 
         <ImageView
             android:id="@+id/imageView5"
             android:layout_width="@dimen/_100sdp"
             android:layout_height="@dimen/_90sdp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="20dp"
             app:srcCompat="@drawable/image_language" />
@@ -36,30 +51,73 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/language"
+            android:id="@+id/tvTitle"
+            app:layout_constraintTop_toBottomOf="@+id/imageView5"
             android:textSize="18sp"
             android:fontFamily="@font/poppin_family"
             android:textStyle="bold"
             android:textColor="@color/black"
             android:layout_gravity="center_horizontal"
             android:gravity="center_horizontal"
-            android:layout_marginTop="130dp"
+            android:layout_marginTop="10dp"
 
             />
-        <androidx.recyclerview.widget.RecyclerView
+
+
+
+
+                <com.aigestudio.wheelpicker.WheelPicker
+
+   app:layout_constraintTop_toBottomOf="@+id/tvTitle"
+                    app:wheel_cyclic="false"
+
+                    android:id="@+id/language"
             android:layout_width="match_parent"
-            android:layout_height="120dp"
-            android:layout_gravity="center_horizontal"
-            android:id="@+id/recyclerviewlanguage"
-            android:layout_marginTop="170dp"
-            android:layout_marginHorizontal="70dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+
+            android:layout_height="wrap_content"
+                    app:wheel_item_text_size="@dimen/_12sdp"
+                    app:wheel_item_space="@dimen/_12sdp"
+                    android:layout_marginVertical="15dp"
+                    app:wheel_item_text_color="#B9CBE2"
+                    app:wheel_selected_item_text_color="@color/base"
+                    app:wheel_visible_item_count="3"
+                    app:wheel_indicator="true"
+                    app:wheel_indicator_color="#33000000"
+                    app:wheel_indicator_size="1dp"
+
+
+
+
+
+            android:layout_marginHorizontal="@dimen/_33sdp"
+
+
             />
+
+
+
+
+
+
+
+
+
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="35dp"
+            app:layout_constraintTop_toBottomOf="@+id/language"
             android:layout_gravity="bottom"
-            android:backgroundTint="@color/base"
-            android:id="@+id/accept"
+            android:layout_marginTop="15dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             android:layout_marginBottom="15dp"
+
+            android:backgroundTint="@color/base"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:id="@+id/accept"
+
             app:cardCornerRadius="15dp"
             android:layout_marginHorizontal="60dp"
 
@@ -79,6 +137,7 @@
                 />
 
         </com.google.android.material.card.MaterialCardView>
+   </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
-</androidx.constraintlayout.widget.ConstraintLayout>
 
+</androidx.constraintlayout.widget.ConstraintLayout>

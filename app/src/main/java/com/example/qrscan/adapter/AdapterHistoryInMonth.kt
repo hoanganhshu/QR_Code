@@ -1,27 +1,26 @@
 package com.example.qrscan.adapter
 
 
-import android.R.attr.visibility
 import android.graphics.Color
 import android.view.View
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.databinding.ViewDataBinding
 import com.example.qrscan.R
-import com.example.qrscan.database.data.HistoryScan
-
 import com.example.qrscan.database.data.QRCodeHistoryScanEntity
 import com.example.qrscan.databinding.ItemHistoryInDayBinding
 import java.text.SimpleDateFormat
 import java.util.Calendar
-import java.util.Date
 import java.util.Locale
+
 interface Callbach{
 
     fun onDelete(item : QRCodeHistoryScanEntity)
     fun onShare(item : QRCodeHistoryScanEntity)
     fun onSelectionMode(isLongPressed: Boolean)
     fun onSelectedIdsChanged(ids: List<Int>)
+
+    fun onEnableSelectionModeForAll()
 
 
 }
@@ -45,16 +44,16 @@ class AdapterHistoryInMonth(private val callback: Callbach) : BaseAdapter<QRCode
 
         mBinding.iconPhoneFront.setImageResource(
             when(item.type.name.lowercase().replaceFirstChar { it.uppercase() }) {
-                "Email" -> R.drawable.email
-                "Phone" -> R.drawable.icon_phone
-                "Contact" -> R.drawable.contacts
-                "Sms" -> R.drawable.sms
-                "Url" -> R.drawable.url
-                "Text" -> R.drawable.text
-                "Wifi" -> R.drawable.wifi
-                "Calendar" -> R.drawable.calendar
-                "Location" -> R.drawable.location
-                else -> R.drawable.icon_phone
+                "Email" -> R.drawable.emailvector
+                "Phone" -> R.drawable.icon_phonevector
+                "Contact" -> R.drawable.contactsvector
+                "Sms" -> R.drawable.smsvector
+                "Url" -> R.drawable.urlvector
+                "Text" -> R.drawable.textvector
+                "Wifi" -> R.drawable.wifivector
+                "Calendar" -> R.drawable.calendarvector
+                "Location" -> R.drawable.locationvector
+                else -> R.drawable.icon_phonevector
             }
         )
 
@@ -63,17 +62,27 @@ class AdapterHistoryInMonth(private val callback: Callbach) : BaseAdapter<QRCode
         if (isLongPressed) {
 
 
-
-
-
-
             if (selectedItems.contains(item.id)) {
                 mBinding.select.visibility=View.VISIBLE
-                mBinding.select.setImageResource(R.drawable.image_select)
+                mBinding.select.setImageResource(R.drawable.image_selectvector)
                 mBinding.circleImage.setImageResource(R.drawable.circle)
                 mBinding.circleImage.setBackgroundColor(Color.parseColor("#3C52F5"))
+                mBinding.cardprevious.strokeColor =
+                    ContextCompat.getColor(mBinding.root.context, R.color.base)
+
+            }
+            else{ mBinding.select.visibility=View.INVISIBLE
+                mBinding.select.setImageResource(0)
+                mBinding.circleImage.setImageResource(R.drawable.circle)
+                mBinding.circleImage.setBackgroundColor(Color.WHITE)
+                mBinding.cardprevious.strokeColor = Color.parseColor("#CDD0E3")
+
+
+
             }
         } else {
+
+            mBinding.cardprevious.strokeColor = Color.parseColor("#CDD0E3")
             mBinding.circleImage.background=null
             mBinding.select.visibility=View.INVISIBLE
             mBinding.circleImage.setImageResource(R.drawable.two_dot)
@@ -94,6 +103,23 @@ class AdapterHistoryInMonth(private val callback: Callbach) : BaseAdapter<QRCode
 
             } else {
                 mBinding.viewSwitcher.showNext()
+                mBinding.tvTitleShowNext.setText(item.type.name.lowercase().replaceFirstChar { it.uppercase() })
+
+                mBinding.iconPhoneBack.setImageResource(
+                    when(item.type.name.lowercase().replaceFirstChar { it.uppercase() }) {
+                        "Email" -> R.drawable.emailvector
+                        "Phone" -> R.drawable.icon_phonevector
+                        "Contact" -> R.drawable.contactsvector
+                        "Sms" -> R.drawable.smsvector
+                        "Url" -> R.drawable.urlvector
+                        "Text" -> R.drawable.textvector
+                        "Wifi" -> R.drawable.wifivector
+                        "Calendar" -> R.drawable.calendarvector
+                        "Location" -> R.drawable.locationvector
+                        else -> R.drawable.icon_phonevector
+                    }
+                )
+
             }
         }
 
@@ -110,6 +136,7 @@ class AdapterHistoryInMonth(private val callback: Callbach) : BaseAdapter<QRCode
             selectedItems.add(item.id)
             callback.onSelectionMode(true)
             callback.onSelectedIdsChanged(selectedItems)
+            callback.onEnableSelectionModeForAll()
 
 
             notifyDataSetChanged()
@@ -165,7 +192,6 @@ class AdapterHistoryInMonth(private val callback: Callbach) : BaseAdapter<QRCode
         if (selectedItems.isEmpty()) {
             clearSelectionMode()
         }
-
         notifyDataSetChanged()
     }
     fun clearSelectionMode() {
@@ -174,9 +200,16 @@ class AdapterHistoryInMonth(private val callback: Callbach) : BaseAdapter<QRCode
         notifyDataSetChanged()
 
 
-        callback.onSelectionMode(false)
-        callback.onSelectedIdsChanged(emptyList())
 
+    }
+    fun enableSelectionMode() {
+        if (!isLongPressed) {
+            isLongPressed = true
+            notifyDataSetChanged()
+        }
+    }
+    fun getSelectedIds(): List<Int> {
+        return selectedItems.toList()
     }
 
 }

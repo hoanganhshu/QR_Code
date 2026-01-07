@@ -1,25 +1,23 @@
 package com.example.qrscan.view
 
-import android.Manifest
-import android.animation.ObjectAnimator
-import android.animation.ValueAnimator
-import android.app.ProgressDialog.show
-import androidx.camera.core.ImageProxy
 
+import android.Manifest
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.health.connect.datatypes.units.Length
+import android.graphics.BitmapFactory
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Matrix
+import android.graphics.Paint
+import android.graphics.Rect
 import android.net.Uri
-
-
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver
-import android.view.animation.LinearInterpolator
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.OptIn
@@ -27,14 +25,15 @@ import androidx.camera.core.Camera
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ExperimentalGetImage
 import androidx.camera.core.ImageAnalysis
-import androidx.camera.core.ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST
+import androidx.camera.core.ImageProxy
 import androidx.camera.core.Preview
+import androidx.camera.core.TorchState
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import com.example.qrscan.BaseFragment
+import com.example.qrscan.BottomNavController
 import com.example.qrscan.MainActivity
 import com.example.qrscan.R
 import com.example.qrscan.databinding.FragmentScanBinding
@@ -44,8 +43,6 @@ import com.google.mlkit.vision.barcode.BarcodeScannerOptions
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.barcode.common.Barcode
 import com.google.mlkit.vision.common.InputImage
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
 
 
@@ -56,6 +53,12 @@ class ScanFragment : BaseFragment<FragmentScanBinding>(){
     private var beepEnabled = true
     private var vibrateEnabled = true
     private var autoScanEnabled = true
+    private var cameraProvider: ProcessCameraProvider? = null
+    private var analyzer: ImageAnalysis? = null
+    private var preview: Preview? = null
+
+
+
 
 
 
@@ -81,60 +84,62 @@ class ScanFragment : BaseFragment<FragmentScanBinding>(){
 
     override fun onResume() {
         super.onResume()
+        Log.e("LIFE", "onResume | isAdded=$isAdded view=$view")
         isHandled = false
+        val ctx = requireContext()
+        mBinding.resultImage.visibility = View.GONE
+        mBinding.previewView.visibility = View.VISIBLE
+
+        beepEnabled = ScanSettingPrefs.getBoolean(ctx, "beep", false)
+        vibrateEnabled = ScanSettingPrefs.getBoolean(ctx, "vibrate", false)
+        autoScanEnabled = ScanSettingPrefs.getBoolean(ctx, "auto_scan", true)
+
+        viewModel.isSave =
+            ScanSettingPrefs.getBoolean(ctx, "save_history", false)
+
+
         Log.d("SCAN", "Reset isHandled")
-        (activity as? MainActivity)?.showBottomNav(true)
-
-
+        (activity as? BottomNavController)?.requestBottomNav(true)
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA)
             == PackageManager.PERMISSION_GRANTED) {
             startCamera()
         } else {
-
             requestPermission.launch(Manifest.permission.CAMERA)
         }
+
     }
     override fun onPause() {
         super.onPause()
+        Log.e("LIFE", "onPaused | isAdded=$isAdded view=$view")
 
         stopCamera()
+        mBinding.resultImage.visibility=View.GONE
     }
-
-
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
-        lifecycleScope.launchWhenStarted {
-            viewModel.autoScanEnabled.collect {
-                autoScanEnabled = it
-                isHandled = false
-            }
-        }
-
-        lifecycleScope.launchWhenStarted {
-            viewModel.beepEnabled.collect {
-                beepEnabled = it
-            }
-        }
-
-        lifecycleScope.launchWhenStarted {
-            viewModel.vibrateEnabled.collect {
-                vibrateEnabled = it
-            }
-        }
-
         setUpUiControler()
-        startScanLineAnimation()
+       
 
     }
-
     private fun scanQRFromGallery(uri : Uri){
         val image = InputImage.fromFilePath(requireContext(),uri)
         scanner.process(image)
             .addOnSuccessListener { barcodes ->
+                if (barcodes.isEmpty()) {
+                    Toast.makeText(requireActivity(),getString(R.string.no_qr),Toast.LENGTH_SHORT).show()
+
+                    return@addOnSuccessListener
+                }
+                val barcode = barcodes.firstOrNull()
+
+                // ❌ QR không hợp lệ
+                if (barcode == null || barcode.rawValue.isNullOrBlank()) {
+                    Toast.makeText(requireActivity(),getString(R.string.no_qr),Toast.LENGTH_SHORT).show()
+                    return@addOnSuccessListener
+                }
+
                 if (!isHandled) {
                     val barcode = barcodes.firstOrNull()
                     if (barcode != null && !barcode.rawValue.isNullOrBlank()) {
@@ -177,8 +182,17 @@ class ScanFragment : BaseFragment<FragmentScanBinding>(){
             val cam = camera ?: return@setOnClickListener
             val hasFlash =cam.cameraInfo.hasFlashUnit()
             if(!hasFlash){
-                Toast.makeText(requireContext(),getString(R.string.notiflash), Toast.LENGTH_SHORT)
+                Toast.makeText(requireContext(),getString(R.string.notiflash), Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
+            }
+            else {
+                val isOn =cam.cameraInfo.torchState.value== TorchState.ON
+                if(isOn){
+                    Toast.makeText(requireActivity(),getString(R.string.on_flash), Toast.LENGTH_SHORT).show()
+                }
+                else{
+                    Toast.makeText(requireActivity(),getString(R.string.off_flash), Toast.LENGTH_SHORT).show()
+                }
             }
             torchOn=!torchOn
             cam.cameraControl.enableTorch(torchOn)
@@ -201,94 +215,104 @@ class ScanFragment : BaseFragment<FragmentScanBinding>(){
 
     override fun onDestroyView() {
         super.onDestroyView()
+        Log.e("LIFE", "onDestroy | isAdded=$isAdded view=$view")
         camera?.cameraControl?.enableTorch(false)
         stopCamera()
     }
     private fun stopCamera() {
-        val context = context ?: return
-        if (!isAdded) return
-
-        try {
-            val cameraProviderFuture = ProcessCameraProvider.getInstance(context)
-            cameraProviderFuture.addListener({
-                val cameraProvider = cameraProviderFuture.get()
-                cameraProvider.unbindAll()
-                camera = null
-                Log.d("SCAN", "Camera stopped")
-            }, ContextCompat.getMainExecutor(context))
-        } catch (e: Exception) {
-            Log.e("SCAN", "Error stopping camera: ${e.message}")
-        }
+        analyzer?.clearAnalyzer()
+        cameraProvider?.unbindAll()
+        camera = null
     }
-
 
     @OptIn(ExperimentalGetImage::class)
     private fun startCamera() {
         val context = context ?: return
+
         if (!isAdded) return
         Log.e("START", "startCamera() CALLED")
         val cameraProviderFuture = ProcessCameraProvider.getInstance(context)
 
+
         cameraProviderFuture.addListener({
-            val cameraProvider = cameraProviderFuture.get()
-            cameraProvider.unbindAll()
+             cameraProvider = cameraProviderFuture.get()
+            cameraProvider?.unbindAll()
 
 
-            val preview = Preview.Builder().build().apply {
+             preview = Preview.Builder().build().apply {
                 setSurfaceProvider(mBinding.previewView.surfaceProvider)
             }
 
-            val analyzer = ImageAnalysis.Builder()
+             analyzer = ImageAnalysis.Builder()
                 .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                 .build()
 
-                analyzer.setAnalyzer(ContextCompat.getMainExecutor(requireContext())) { imageProxy ->
 
 
-                    if (!autoScanEnabled || isHandled) {
-                        imageProxy.close()
-                        return@setAnalyzer
-                    }
-                    Log.d("SCAN", "autoScan=$autoScanEnabled isHandled=$isHandled")
+
+            analyzer?.setAnalyzer(ContextCompat.getMainExecutor(requireContext())) { imageProxy ->
 
 
-                    val media = imageProxy.image
-                    if (media == null) {
-                        imageProxy.close()
-                        return@setAnalyzer
-                    }
+                if (!autoScanEnabled || isHandled) {
+                    imageProxy.close()
+                    return@setAnalyzer
+                }
+                Log.d("SCAN", "autoScan=$autoScanEnabled isHandled=$isHandled")
 
-                    val image = InputImage.fromMediaImage(media, imageProxy.imageInfo.rotationDegrees)
 
-                    scanner.process(image)
-                        .addOnSuccessListener { barcodes ->
-                            if (!isHandled) {
-                                val barcode = barcodes.firstOrNull()
-                                if (barcode != null && !barcode.rawValue.isNullOrBlank()) {
-                                    isHandled = true
+                val media = imageProxy.image
+                if (media == null) {
+                    imageProxy.close()
+                    return@setAnalyzer
+                }
+                Log.e(
+                    "SCAN_FLOW",
+                    "QR DETECTED | before postDelayed | isAdded=$isAdded view=$view"
+                )
+
+
+                val image = InputImage.fromMediaImage(media, imageProxy.imageInfo.rotationDegrees)
+
+                scanner.process(image)
+                    .addOnSuccessListener { barcodes ->
+                        if (!isHandled) {
+                            val barcode = barcodes.firstOrNull()
+                            if (barcode != null && !barcode.rawValue.isNullOrBlank()) {
+                                isHandled = true
+
+                                val bitmap= imageProxy.toBitmap().rotate(imageProxy.imageInfo.rotationDegrees)
+                                val boxedBitmap =drawBoundingBox(bitmap,barcode.boundingBox!!)
+                                showResultImage(boxedBitmap)
+                                Handler(Looper.getMainLooper()).postDelayed({
                                     onQrResult(barcode)
-                                }
+                                }, 400)
                             }
                         }
-                        .addOnCompleteListener {
-                            imageProxy.close()
-                        }
-                }
+                    }
+                    .addOnCompleteListener {
+                        imageProxy.close()
+                    }
+            }
 
 
 
-                camera = cameraProvider.bindToLifecycle(
-                viewLifecycleOwner,
-                cameraSelector,
-                preview,
-                analyzer
-            )
+                camera = cameraProvider?.bindToLifecycle(
+                    this@ScanFragment,
+                    cameraSelector,
+                    preview,
+                    analyzer
+                )
 
 
             val zoomState = camera!!.cameraInfo.zoomState.value!!
+
             mBinding.slider.valueFrom = zoomState.minZoomRatio
             mBinding.slider.valueTo = zoomState.maxZoomRatio
-            mBinding.slider.value = zoomState.zoomRatio
+            val initialZoom =
+                zoomState.minZoomRatio +
+                        0.3f * (zoomState.maxZoomRatio - zoomState.minZoomRatio)
+            mBinding.slider.value = initialZoom
+            camera!!.cameraControl.setZoomRatio(initialZoom)
 
         }, ContextCompat.getMainExecutor(requireContext()))
     }
@@ -304,16 +328,13 @@ class ScanFragment : BaseFragment<FragmentScanBinding>(){
         viewModel.byteScanQR = qrBitmap.toByteArray()
         viewModel.content=parsed.content
         viewModel.setUserScan(parsed.data)
+        viewModel.setScanOption(parsed.type)
 
-        viewModel.setCreateOption(parsed.type)
         ScanSetting.play(
             context = requireContext(),
             beep = beepEnabled,
             vibrate = vibrateEnabled
         )
-
-
-
 
         if (viewModel.isSave) {
             viewModel.saveScanned(
@@ -329,39 +350,78 @@ class ScanFragment : BaseFragment<FragmentScanBinding>(){
             Log.d("SCAN", "Saved content = ${parsed.content}")
 
         val next = requireActivity().findViewById<ViewPager2>(R.id.viewPager)
-        next.currentItem = next.currentItem + 7
+        Log.e("NAV_DEBUG", "ScanFragment onQrResult → go HistoryScan (11)")
+        (activity as? MainActivity)?.navigateMain(HistoryScanFragment())
+
         next.isUserInputEnabled = false
 
 
     }
+    private fun showResultImage(bitmap: Bitmap) {
+        mBinding.previewView.visibility = View.GONE
+        mBinding.resultImage.visibility = View.VISIBLE
+        mBinding.resultImage.setImageBitmap(bitmap)
 
-
-    private fun startScanLineAnimation() {
-        val frame = mBinding.framecamera
-        val line = mBinding.scanLine
-
-
-        frame.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
-            override fun onGlobalLayout() {
-                frame.viewTreeObserver.removeOnGlobalLayoutListener(this)
-
-                val distance = frame.height - line.height
-
-                ObjectAnimator.ofFloat(line, "translationY", 0f, distance.toFloat()).apply {
-                    duration = 1500L
-                    repeatCount = ValueAnimator.INFINITE
-                    repeatMode = ValueAnimator.REVERSE
-                    interpolator = LinearInterpolator()
-                    start()
-                }
-            }
-        })
     }
+    fun Bitmap.rotate(degrees : Int) : Bitmap {
+        if(degrees==0) return this
+
+        val matrix = Matrix().apply {
+            postRotate(degrees.toFloat())
+        }
+        return Bitmap.createBitmap(this,0,0,width,height,matrix,true)
+    }
+
+
+
+
     fun Bitmap.toByteArray(): ByteArray {
         val stream = ByteArrayOutputStream()
         compress(Bitmap.CompressFormat.PNG, 100, stream)
         return stream.toByteArray()
     }
+    fun ImageProxy.toBitmap() : Bitmap{
+        val yBuffer=planes[0].buffer
+        val uBuffer=planes[1].buffer
+        val vBuffer=planes[2].buffer
+
+        val ySize=yBuffer.remaining()
+        val uSize=uBuffer.remaining()
+        val vSize=vBuffer.remaining()
+
+        val nv21= ByteArray(ySize+uSize+vSize)
+        yBuffer.get(nv21,0,ySize)
+        uBuffer.get(nv21,ySize,vSize)
+        vBuffer.get(nv21,ySize+vSize,uSize)
+
+        val yuvImage = android.graphics.YuvImage(nv21,android.graphics.ImageFormat.NV21,width,height,null)
+
+        val out= ByteArrayOutputStream()
+        yuvImage.compressToJpeg(Rect(0, 0,width,height),100,out)
+
+        val imageBytes=out.toByteArray()
+        return BitmapFactory.decodeByteArray(imageBytes,0,imageBytes.size)
+
+
+    }
+    fun drawBoundingBox(
+        bitmap: Bitmap,
+        rect: Rect
+    ): Bitmap {
+        val mutable = bitmap.copy(Bitmap.Config.ARGB_8888, true)
+        val canvas = Canvas(mutable)
+
+        val paint = Paint().apply {
+            color = Color.GREEN
+            style = Paint.Style.STROKE
+            strokeWidth = 8f
+            isAntiAlias = true
+        }
+
+        canvas.drawRect(rect, paint)
+        return mutable
+    }
+
 
 
 

@@ -8,8 +8,8 @@
   >
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
-        android:layout_height="460dp"
-        android:layout_marginHorizontal="@dimen/_40sdp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/_30sdp"
         android:layout_marginTop="@dimen/_20sdp"
 
         app:layout_constraintTop_toTopOf="parent"
@@ -21,9 +21,21 @@
         app:strokeWidth="1dp"
 
         >
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            >
+
+
+
+
 
 
         <ImageView
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             android:id="@+id/image"
             android:layout_width="170dp"
             android:layout_height="134dp"
@@ -31,19 +43,26 @@
             android:layout_marginTop="20dp"
             app:srcCompat="@drawable/image_rating" />
         <TextView
+            app:layout_constraintTop_toBottomOf="@+id/image"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/givefeeeback"
             android:fontFamily="@font/poppin_family"
             android:textSize="13sp"
             android:textStyle="bold"
+            android:id="@+id/tvSubtitle"
             android:textColor="@color/black"
             android:layout_gravity="center_horizontal"
             android:gravity="center_horizontal"
-            android:layout_marginTop="215dp"
+            android:layout_marginTop="15dp"
 
             />
         <RatingBar
+            app:layout_constraintTop_toBottomOf="@+id/tvSubtitle"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             android:id="@+id/ratingBar"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
@@ -55,16 +74,20 @@
             android:layout_gravity="center_horizontal"
             android:secondaryProgressTint="@color/yellow"
             android:indeterminateTint="@color/yellow"
-            android:layout_marginTop="160dp" />
+            android:layout_marginTop="16dp" />
 
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ratingBar"
             android:minHeight="120dp"
+            android:id="@+id/cardinput"
 
             app:strokeWidth="1dp"
 
-            android:layout_marginTop="265dp"
+            android:layout_marginTop="15dp"
             app:strokeColor="#DCDCF0"
             app:cardCornerRadius="15dp"
             android:layout_marginHorizontal="25dp"
@@ -92,6 +115,12 @@
             android:layout_width="match_parent"
             android:layout_height="35dp"
             android:layout_gravity="bottom"
+            app:layout_constraintTop_toBottomOf="@+id/cardinput"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="15dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+
             android:backgroundTint="@color/base"
             android:layout_marginBottom="20dp"
             app:cardCornerRadius="15dp"
@@ -113,8 +142,10 @@
                 />
 
         </com.google.android.material.card.MaterialCardView>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </com.google.android.material.card.MaterialCardView>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

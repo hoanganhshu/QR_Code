@@ -1,15 +1,16 @@
 package com.example.qrscan.view
 
-import android.R.attr.data
 import android.graphics.Bitmap
+import android.graphics.Rect
 import android.os.Bundle
 import android.text.InputType
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -41,6 +42,15 @@ private const val ARG_PARAM2 = "param2"
 class CreateDetailFragment : BaseFragment<FragmentCreateDetailBinding>(){
     private val viewModel : ScanViewModel by activityViewModels()
     private lateinit var adapter: AdapterCreate
+    private var selectedSecurity: SecurityType = SecurityType.FREE
+
+
+
+    enum class SecurityType {
+        FREE, WPA, WEP
+    }
+
+    private var isKeyboardVisible = false
     var qrid : Int =0
 
     private var data =listOf<Map<String,Any>>()
@@ -53,12 +63,20 @@ class CreateDetailFragment : BaseFragment<FragmentCreateDetailBinding>(){
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+
         val next = requireActivity().findViewById<ViewPager2>(R.id.viewPager)
         next.isUserInputEnabled = false
         adapter = AdapterCreate()
         mBinding.recyclerview.layoutManager = LinearLayoutManager(requireContext())
         mBinding.recyclerview.adapter = adapter
+        mBinding.recyclerview.itemAnimator = null
        qrid = viewModel.itemIdCreate
+        adapter.setRecyclerView(mBinding.recyclerview)
+
+
+        setupKeyboardListener()
+
         Log.d("TEST_ID", "ID nhận từ ViewModel = $qrid")
         Log.d("TEST_ID", "ID  = $id")
         lifecycleScope.launch {
@@ -69,9 +87,7 @@ class CreateDetailFragment : BaseFragment<FragmentCreateDetailBinding>(){
                     fillUI(qr)
                 }
                 else {
-
                     Log.d("RecyclerView", "Data size: ${data.size}")
-
 
                 }
 
@@ -83,39 +99,91 @@ class CreateDetailFragment : BaseFragment<FragmentCreateDetailBinding>(){
                 viewModel.createOption.collect { type ->
                     if (type == null) return@collect
                     if (qrid != 0) return@collect
-
-
                     mBinding.create.text = getTitle(type)
-
-
                     fillInforGenerate(type)
-
+                    adapter.clearInputMap()
                     adapter.submitData(data)
                 }
             }
         }
+        mBinding.root.setOnClickListener {
+            hideKeyboard()
+
+        }
+        val isWifi = viewModel.createOption.value
+        if (isWifi == QRType.WIFI) {
+            mBinding.optionwifi.visibility=View.VISIBLE
+            selectedSecurity = SecurityType.FREE
+            mBinding.selectwifi.post {
+                mBinding.selectwifi.check(R.id.free)
+            }
+
+        } else {
+            mBinding.optionwifi.visibility= View.GONE
+        }
 
 
 
+
+        mBinding.selectwifi.addOnButtonCheckedListener { _, checkedId, isChecked ->
+            if (!isChecked) return@addOnButtonCheckedListener
+
+            when (checkedId) {
+                R.id.free -> {
+                    selectedSecurity = SecurityType.FREE
+                    mBinding.recyclerview.visibility = View.GONE
+                }
+
+                R.id.wpa -> {
+                    selectedSecurity = SecurityType.WPA
+                    mBinding.recyclerview.visibility = View.VISIBLE
+                }
+
+                R.id.wep -> {
+                    selectedSecurity = SecurityType.WEP
+                    mBinding.recyclerview.visibility = View.VISIBLE
+                }
+            }
+        }
 
         (activity as? MainActivity)?.showBottomNav(false)
         mBinding.btnback.setOnClickListener {
-            next.currentItem = next.currentItem - 1
+            (activity as? MainActivity)?.navigateMain(CreateOptionFragment())
+
+            viewModel.clearCreateOption()
         }
         mBinding.btncreate.setOnClickListener {
             try {
-
                 val adapter = mBinding.recyclerview.adapter as AdapterCreate
-                val input: Map<String, String> = adapter.getUserInput()
-
 
                 val opt = viewModel.createOption.value ?: return@setOnClickListener
 
+                 adapter.saveCurrentValuesFromViews()
+
+                val input: Map<String, String> = adapter.getUserInput()
+                var hasError =false
+
+                data.forEach { item ->
+                    val key = item["key"]?.toString() ?: return@forEach
+                    val value = input[key]?.trim() ?: ""
+
+                    if (value.isEmpty()) {
+                        adapter.setError(key)
+                        hasError = true
+                    } else {
+                        adapter.clearError(key)
+                    }
+                }
+                if(hasError){
+                    adapter.notifyDataSetChanged()
+                    return@setOnClickListener
+                }
 
                 viewModel.content = when (opt) {
-
-
                     QRType.EMAIL -> {
+
+
+
                         val email = input["email"].orEmpty()
                         val cc = input["cc"].orEmpty()
                         val subject = input["subject"].orEmpty()
@@ -126,30 +194,22 @@ class CreateDetailFragment : BaseFragment<FragmentCreateDetailBinding>(){
 
                         buildMailto(email, subject, body, cc)
                     }
-
-
                     QRType.URL -> {
                         val url = input["url"].orEmpty()
                         if (url.isBlank()) throw Exception("URL cannot be empty")
                         url
                     }
-
-
                     QRType.TEXT  -> {
                         val text = input["text"].orEmpty()
                         if (text.isBlank()) throw Exception("Text is empty")
                         text
                     }
-
-
                     QRType.PHONE -> {
                         val number = input["number"].orEmpty()
                         if (number.isBlank()) throw Exception("Phone number required")
 
                         "tel:$number"
                     }
-
-
                     QRType.SMS -> {
                         val phone = input["phone"].orEmpty()
                         val body = input["body"].orEmpty()
@@ -157,16 +217,30 @@ class CreateDetailFragment : BaseFragment<FragmentCreateDetailBinding>(){
 
                         "SMSTO:$phone:$body"
                     }
-
-                       QRType.WIFI -> {
+                    QRType.WIFI -> {
                         val ssid = input["network"].orEmpty()
                         val pass = input["password"].orEmpty()
+
                         if (ssid.isBlank()) throw Exception("SSID is required")
 
-                        "WIFI:T:WPA;S:$ssid;P:$pass;;"
+                        val authType = when (selectedSecurity) {
+                            SecurityType.FREE -> "nopass"
+                            SecurityType.WPA -> "WPA"
+                            SecurityType.WEP -> "WEP"
+                        }
+
+                        buildString {
+                            append("WIFI:")
+                            append("T:$authType;")
+                            append("S:$ssid;")
+
+                            if (selectedSecurity != SecurityType.FREE) {
+                                append("P:$pass;")
+                            }
+
+                            append(";")
+                        }
                     }
-
-
                     QRType.CONTACT -> {
                         val name = input["name"].orEmpty()
                         val phone = input["phone"].orEmpty()
@@ -187,8 +261,6 @@ class CreateDetailFragment : BaseFragment<FragmentCreateDetailBinding>(){
                 END:VCARD
                 """.trimIndent()
                     }
-
-
                     QRType.LOCATION  -> {
                         val lat = input["latitude"].orEmpty()
                         val lon = input["longitude"].orEmpty()
@@ -197,8 +269,6 @@ class CreateDetailFragment : BaseFragment<FragmentCreateDetailBinding>(){
 
                         "geo:$lat,$lon"
                     }
-
-
                     QRType.EVENT -> {
                         val name = input["name"].orEmpty()
                         val start = input["start"].orEmpty()
@@ -239,14 +309,10 @@ class CreateDetailFragment : BaseFragment<FragmentCreateDetailBinding>(){
                 val stream= ByteArrayOutputStream()
                 bitmap.compress(Bitmap.CompressFormat.PNG,100,stream)
                 viewModel.byteQR=stream.toByteArray()
-
-
-
                 Log.d("QR_DEBUG", "content = $content")
                 Log.d("QR_DEBUG", "byteQR size = ${viewModel.byteQR?.size}")
+                (activity as? MainActivity)?.navigateMain(ResultFragment())
 
-                val next = requireActivity().findViewById<ViewPager2>(R.id.viewPager)
-                next.currentItem = next.currentItem +1
 
 
             } catch (e: Exception) {
@@ -273,6 +339,8 @@ class CreateDetailFragment : BaseFragment<FragmentCreateDetailBinding>(){
                 prefill["cc"] = qr.data["cc"] as? String ?: ""
                 prefill["subject"] = qr.data["subject"] as? String ?: ""
                 prefill["body"] = qr.data["body"] as? String ?: ""
+
+
             }
 
             QRType.PHONE -> {
@@ -294,6 +362,9 @@ class CreateDetailFragment : BaseFragment<FragmentCreateDetailBinding>(){
             }
 
             QRType.WIFI -> {
+
+
+
                 prefill["network"] = qr.data["network"] as? String ?: ""
                 prefill["password"] = qr.data["password"] as? String ?: ""
             }
@@ -326,6 +397,14 @@ class CreateDetailFragment : BaseFragment<FragmentCreateDetailBinding>(){
         adapter.submitData(data)
         adapter.prefillInput(prefill)
     }
+    private fun hideKeyboard() {
+        val imm = requireContext()
+            .getSystemService(android.content.Context.INPUT_METHOD_SERVICE)
+                as android.view.inputmethod.InputMethodManager
+
+        imm.hideSoftInputFromWindow(view?.windowToken, 0)
+    }
+
 
 
     fun fillInforGenerate(opt: QRType) {
@@ -433,7 +512,9 @@ class CreateDetailFragment : BaseFragment<FragmentCreateDetailBinding>(){
                 )
             )
 
-            QRType.WIFI -> listOf(
+            QRType.WIFI ->{
+                mBinding.optionwifi.visibility=View.VISIBLE
+                listOf(
                 mapOf(
                     "key" to "network",
                     "title" to "Network:",
@@ -446,7 +527,7 @@ class CreateDetailFragment : BaseFragment<FragmentCreateDetailBinding>(){
                     "subtitle" to "12345678",
                     "inputType" to (InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD)
                 )
-            )
+            )}
 
             QRType.TEXT -> listOf(
                 mapOf(
@@ -505,6 +586,28 @@ class CreateDetailFragment : BaseFragment<FragmentCreateDetailBinding>(){
 
         return if (query.isBlank()) "mailto:$email"
         else "mailto:$email?$query"
+    }
+    private fun setupKeyboardListener() {
+        val rootView = view ?: return
+        val rootViewTreeObserver = rootView.viewTreeObserver
+
+        rootViewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                val rect = Rect()
+                rootView.getWindowVisibleDisplayFrame(rect)
+                val screenHeight = rootView.height
+                val keypadHeight = screenHeight - rect.bottom
+
+
+                if (keypadHeight > 200) {
+                    if (!isKeyboardVisible) {
+                        isKeyboardVisible = true
+                    }
+                } else {
+                    isKeyboardVisible = false
+                }
+            }
+        })
     }
     private fun getTitle(type: QRType): String {
         return when (type) {

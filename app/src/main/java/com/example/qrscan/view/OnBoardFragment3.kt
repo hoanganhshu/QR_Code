@@ -1,14 +1,13 @@
 package com.example.qrscan.view
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.viewpager2.widget.ViewPager2
+import androidx.fragment.app.Fragment
 import com.example.qrscan.BaseFragment
+import com.example.qrscan.BottomNavController
 import com.example.qrscan.MainActivity
-import com.example.qrscan.R
 import com.example.qrscan.databinding.FragmentOnBoard3Binding
 
 // TODO: Rename parameter arguments, choose names that match
@@ -32,8 +31,8 @@ class OnBoardFragment3 : BaseFragment<FragmentOnBoard3Binding>(){
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mBinding.next.setOnClickListener {
-            val next=requireActivity().findViewById<ViewPager2>(R.id.viewPager)
-            next.currentItem+=1
+            (activity as? MainActivity)?.goToMainFlow()
+
         }
         mBinding.skip.setOnClickListener {
 
@@ -41,7 +40,7 @@ class OnBoardFragment3 : BaseFragment<FragmentOnBoard3Binding>(){
     }
     override fun onResume() {
         super.onResume()
-        (activity as? MainActivity)?.showBottomNav(false)
+        (activity as? BottomNavController)?.requestBottomNav(false)
     }
 
 }
